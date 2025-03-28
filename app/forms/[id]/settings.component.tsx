@@ -15,10 +15,10 @@ interface SettingsProps {
 
 export function Settings(prop: SettingsProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 bg-background rounded-lg p-6">
       <h1>Settings</h1>
       <Separator orientation="horizontal" />
-      <div className="p-8">
+      <div className="p-4">
         <div className="flex justify-between items-center">
           <div>
             <Label htmlFor="enable-feature">Make this a quiz</Label>

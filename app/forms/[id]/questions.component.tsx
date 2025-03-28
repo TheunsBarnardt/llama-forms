@@ -1,32 +1,66 @@
 "use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import QuestionItem, { Question } from './question-item.component';
-import { File, ImageIcon, PlaySquare, Text } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import QuestionItem, { Question } from "./question-item.component";
+import { File, ImageIcon, PlaySquare, Text } from "lucide-react";
+
+// Load EditorJS dynamically
+import EditorJS, { OutputBlockData } from "@editorjs/editorjs";
+import Header from "@editorjs/header";
 
 interface QuestionsProps {
-	id: string;
+  id: string;
 }
 
 const initialQuestion: Question = {
-  id: '1',
-  questionText: 'Untitled Question',
-  questionType: 'short_answer',
+  id: "1",
+  questionText: "Untitled Question",
+  questionType: "short_answer",
   options: [],
   required: false,
 };
 
 export function Questions(prop: QuestionsProps) {
-
   const [questions, setQuestions] = useState<Question[]>([initialQuestion]);
+  const [formDescription, setFormDescription] = useState<OutputBlockData<string, { text: string }>[]>([]);
+
+  const editorRef = useRef<EditorJS | null>(null);
+  const editorContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!editorRef.current && editorContainerRef.current) {
+      const editor = new EditorJS({
+        holder: editorContainerRef.current,
+        placeholder: "Form description...",
+        autofocus: true,
+        minHeight: 40, 
+        tools: {
+          header: Header,
+        },
+        data: {
+          blocks: formDescription,
+        },
+        async onChange() {
+          const output = await editor.save();
+          setFormDescription(output?.blocks?.[0]?.data?.text || "");
+        },
+      });
+
+      editorRef.current = editor;
+    }
+
+    return () => {
+      editorRef.current?.destroy?.();
+      editorRef.current = null;
+    };
+  }, []);
 
   const addQuestion = () => {
     const newQuestion: Question = {
       id: String(questions.length + 1),
-      questionText: 'Untitled Question',
-      questionType: 'short_answer',
+      questionText: "Untitled Question",
+      questionType: "short_answer",
       options: [],
       required: false,
     };
@@ -34,14 +68,12 @@ export function Questions(prop: QuestionsProps) {
   };
 
   return (
-<div className="p-4">
-
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-4">
+      <div className="rounded-lg bg-background p-4 mb-4 border-t-8 border-t-fuchsia-600">
         <div>
           <h1 className="text-2xl font-bold">Blank Quiz</h1>
-          <Textarea placeholder="Form description" className="mt-2" />
+          <div ref={editorContainerRef} className="mt-2 border p-2 rounded min-h-[50px] pb-0" />
         </div>
-
       </div>
 
       <div className="mb-4">
@@ -50,7 +82,7 @@ export function Questions(prop: QuestionsProps) {
         ))}
       </div>
 
-      <div className="fixed top-1/2 right-4 transform -translate-y-1/2 flex flex-col items-center">
+      <div className="fixed top-1/2 right-4 transform -translate-y-1/2 flex flex-col items-center bg-background p-4 rounded-lg shadow-lg">
         <Button variant="ghost" size="icon" className="mb-2" onClick={addQuestion}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
         </Button>
@@ -60,7 +92,7 @@ export function Questions(prop: QuestionsProps) {
         <Button variant="ghost" size="icon" className="mb-2">
           <ImageIcon />
         </Button>
-		<Button variant="ghost" size="icon" className="mb-2">
+        <Button variant="ghost" size="icon" className="mb-2">
           <PlaySquare />
         </Button>
         <Button variant="ghost" size="icon" className="mb-2">

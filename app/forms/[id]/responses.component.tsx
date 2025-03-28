@@ -54,7 +54,6 @@ import {
   GripVerticalIcon,
   LoaderIcon,
   MoreVerticalIcon,
-  PlusIcon,
   TrendingUpIcon,
 } from "lucide-react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
@@ -89,7 +88,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 
 export const schema = z.object({
   id: z.number(),
@@ -362,7 +361,7 @@ export function Responses({
   }
 
   return (
-    <Tabs defaultValue="outline" className="flex w-full flex-col justify-start gap-6">
+    <Tabs defaultValue="outline" className="flex w-full flex-col justify-start gap-6 bg-background rounded-lg pt-6">
       <div className="flex items-center justify-end px-4 lg:px-6">
         <Label htmlFor="view-selector" className="sr-only">
           View
