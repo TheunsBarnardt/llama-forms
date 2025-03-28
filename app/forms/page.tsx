@@ -13,7 +13,7 @@ import { Question } from '../types/question.type';
 export default function Page() {
   return (
     <div className="inline-grid grid-cols-3 gap-4">
-      {data.map((form: Question) => {
+      {data.map((form: Question) => {		
         return <FormGridItem key={form.id} {...form} />;
       })}
     </div>

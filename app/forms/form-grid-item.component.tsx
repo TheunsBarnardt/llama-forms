@@ -53,8 +53,16 @@ export function FormGridItem(quotation : Question) {
     setIsRemoveDialogOpen(false);
   };
 
+  const handleOpen = () => {
+    const quotationJson = encodeURIComponent(JSON.stringify(quotation));
+    const url = `/forms/${quotation.id}?data=${quotationJson}`;
+    window.open(url);
+  };
+
   const handleOpenNewTab = () => {
-    window.open(`/forms/${quotation.id}`, "_blank");
+    const quotationJson = encodeURIComponent(JSON.stringify(quotation));
+    const url = `/forms/${quotation.id}?data=${quotationJson}`;
+    window.open(url, "_blank");
   };
 
   return (
@@ -69,6 +77,7 @@ export function FormGridItem(quotation : Question) {
           layout="fill"
           objectFit="cover"
           className="rounded-t-sm"
+          onClick={handleOpen}
         />
       </CardContent>
       <CardFooter className="flex flex-col px-4">

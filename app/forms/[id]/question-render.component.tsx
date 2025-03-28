@@ -1,3 +1,4 @@
+"use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CheckboxQuestionRender } from "./checkbox-question-render.component";
 import { DropdownQuestionRender } from "./dropdown-question-render.component";
@@ -5,6 +6,7 @@ import { MultipleChoiceQuestionRender } from "./multiple-choice-question-render.
 import { ParagraphRender } from "./paragraph-render.component";
 import { Question } from "../../types/question.type";
 import { ShortAnswerRender } from "./short-answer-render.component";
+import { FormProvider, useForm } from "react-hook-form";
 
 const questionComponents: { [key: string]: React.ComponentType<any> } = {
   short_answer: ShortAnswerRender,
@@ -15,8 +17,15 @@ const questionComponents: { [key: string]: React.ComponentType<any> } = {
 };
 
 export default function QuestionRender(question: Question) {
+  const methods = useForm();
+  const onSubmit = (data: any) => {
+    console.log("Form submitted:", data);
+  };
+
   return (
-    <div>
+    <FormProvider {...methods}>  
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+
       <h2>{question.title}</h2>
       <div className="fields">
         {question.fields.map((field) => {
@@ -29,6 +38,7 @@ export default function QuestionRender(question: Question) {
           );
         })}
       </div>
-    </div>
+      </form>
+      </FormProvider>
   );
 }
