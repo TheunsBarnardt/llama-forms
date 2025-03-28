@@ -5,7 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { GripVertical, Trash2 } from "lucide-react";
-import { Question } from "./question-item.component";
+import { Field } from "../../types/field.type";
 
 // Draggable Option Component
 function DraggableOption({ option, index, onChange, onRemove }: {
@@ -36,28 +36,28 @@ function DraggableOption({ option, index, onChange, onRemove }: {
 }
 
 // Multiple Choice Component
-export function MultipleChoiceQuestion(question: Question) {
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
+export function MultipleChoiceQuestion(field: Field) {
+  const [currentField, setCurrentQuestion] = useState<Field>(field);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newOptions = [...currentQuestion.options!];
+    const newOptions = [...currentField.options!];
     newOptions[index] = e.target.value;
-    setCurrentQuestion({ ...currentQuestion, options: newOptions });
+    setCurrentQuestion({ ...currentField, options: newOptions });
   };
 
   const addOption = () => {
     setCurrentQuestion({
-      ...currentQuestion,
-      options: [...(currentQuestion.options || []), `Option ${(currentQuestion.options?.length || 0) + 1}`],
+      ...currentField,
+      options: [...(currentField.options || []), `Option ${(currentField.options?.length || 0) + 1}`],
     });
   };
 
   const removeOption = (index: number) => {
-    const newOptions = [...currentQuestion.options!];
+    const newOptions = [...currentField.options!];
     newOptions.splice(index, 1);
-    setCurrentQuestion({ ...currentQuestion, options: newOptions });
+    setCurrentQuestion({ ...currentField, options: newOptions });
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,9 +74,9 @@ export function MultipleChoiceQuestion(question: Question) {
   return (
     <div>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
-        <SortableContext items={currentQuestion.options?.map((_, i) => i) || []} strategy={verticalListSortingStrategy}>
+        <SortableContext items={currentField.options?.map((_, i) => i) || []} strategy={verticalListSortingStrategy}>
           <RadioGroup>
-            {currentQuestion.options?.map((option, index) => (
+            {currentField.options?.map((option, index) => (
               <DraggableOption key={index} option={option} index={index} onChange={handleOptionChange} onRemove={removeOption} />
             ))}
           </RadioGroup>

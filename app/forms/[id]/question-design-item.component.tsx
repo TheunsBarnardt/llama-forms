@@ -1,4 +1,3 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -45,33 +44,14 @@ import { Paragraph } from "./paragraph.component";
 import { MultipleChoiceQuestion } from "./multipleChoice.component";
 import { CheckBoxQuestion } from "./checkbox.component";
 import { DropdownQuestion } from "./dropdown.component";
+import { Field } from "../../types/field.type";
 
-export interface Question {
-  id: string;
-  questionText: string;
-  questionType:
-    | "short_answer"
-    | "paragraph"
-    | "multiple_choice"
-    | "checkboxes"
-    | "dropdown"
-    | "file_upload"
-    | "linear_scale"
-    | "rating"
-    | "multiple_choice_grid"
-    | "checkbox_grid"
-    | "date"
-    | "time";
-  options?: string[];
-  required: boolean;
-}
-
-export default function QuestionItem({
-  question,
+export default function QuestionDesignItem({
+  field,
   id,
   draggingClassName,
 }: {
-  question: Question;
+  field: Field;
   id: string;
   draggingClassName?: string;
 }) {
@@ -89,7 +69,7 @@ export default function QuestionItem({
     // Make cursor a move icon when dragging
     opacity: transform ? 0.5 : 1, // Reduce opacity when dragging
   };
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
+  const [currentField, setCurrentField] = useState<Field>(field);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const handleTagChange = (tag: string, checked: boolean) => {
@@ -100,62 +80,37 @@ export default function QuestionItem({
     }
   };
 
-  const handleQuestionChange = (
+  const handleFieldChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setCurrentQuestion({ ...currentQuestion, questionText: e.target.value });
+    setCurrentField({ ...currentField, name: e.target.value });
   };
 
   const handleTypeChange = (value: string) => {
-    setCurrentQuestion({
-      ...currentQuestion,
-      questionType: value as Question["questionType"],
+    setCurrentField({
+      ...currentField,
+      type: value as Field["type"],
     });
   };
 
-  const handleOptionChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    if (currentQuestion.options) {
-      const newOptions = [...currentQuestion.options];
-      newOptions[index] = e.target.value;
-      setCurrentQuestion({ ...currentQuestion, options: newOptions });
-    }
-  };
 
   const handleRequiredChange = (checked: boolean) => {
-    setCurrentQuestion({ ...currentQuestion, required: checked });
+    setCurrentField({ ...currentField, required: checked });
   };
 
-  const addOption = () => {
-    if (currentQuestion.options) {
-      setCurrentQuestion({
-        ...currentQuestion,
-        options: [...currentQuestion.options, `Option ${currentQuestion.options.length + 1}`],
-      });
-    }
-  };
-  
 
-  const removeOption = (index: number) => {
-    const newOptions = [...currentQuestion.options!];
-    newOptions.splice(index, 1);
-    setCurrentQuestion({ ...currentQuestion, options: newOptions });
-  };
-
-  const renderQuestionType = () => {
-    switch (currentQuestion.questionType) {
+  const renderFieldType = () => {
+    switch (currentField.type) {
       case "short_answer":
         return <ShortAnswer />;
       case "paragraph":
         return <Paragraph />;
       case "multiple_choice":
-        return <MultipleChoiceQuestion {...currentQuestion} />;
+        return <MultipleChoiceQuestion {...currentField} />;
       case "checkboxes":
-        return <CheckBoxQuestion {...currentQuestion} />;
+        return <CheckBoxQuestion {...currentField} />;
       case "dropdown":
-        return <DropdownQuestion {...currentQuestion} />;
+        return <DropdownQuestion {...currentField} />;
       case "file_upload":
         return <Input type="file" className="mb-2" />;
       case "linear_scale":
@@ -212,7 +167,7 @@ export default function QuestionItem({
   const Duration = createDropdownMenuCheckboxItem("Duration");
 
   const renderDropdown = () => {
-    switch (currentQuestion.questionType) {
+    switch (currentField.type) {
       case "short_answer":
       case "paragraph":
         return (
@@ -297,109 +252,109 @@ export default function QuestionItem({
       >
         <GripHorizontal />
       </div>
-<div className="px-4">
-      <div className="flex justify-end mb-2">
-        <Select
-          value={currentQuestion.questionType}
-          onValueChange={handleTypeChange}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Short answer" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="short_answer">
-              <Text className="inline-block mr-2" />
-              Short answer
-            </SelectItem>
-            <SelectItem value="paragraph">
-              <MessageSquare className="inline-block mr-2" />
-              Paragraph
-            </SelectItem>
-            <DropdownMenuSeparator />
-            <SelectItem value="multiple_choice">
-              <List className="inline-block mr-2" />
-              Multiple choice
-            </SelectItem>
-            <SelectItem value="checkboxes">
-              <CheckSquare className="inline-block mr-2" />
-              Checkboxes
-            </SelectItem>
-            <SelectItem value="dropdown">
-              <CircleChevronDown className="inline-block mr-2" />
-              Dropdown
-            </SelectItem>
-            <DropdownMenuSeparator />
-            <SelectItem value="file_upload">
-              <FileUp className="inline-block mr-2" />
-              File upload
-            </SelectItem>
-            <DropdownMenuSeparator />
-            <SelectItem value="linear_scale">
-              <SlidersVertical className="inline-block mr-2" />
-              Linear scale
-            </SelectItem>
-            <SelectItem value="rating">
-              <Star className="inline-block mr-2" />
-              Rating
-            </SelectItem>
-            <SelectItem value="multiple_choice_grid">
-              <Grip className="inline-block mr-2" />
-              Multiple choice grid
-            </SelectItem>
-            <SelectItem value="checkbox_grid">
-              <Grid className="inline-block mr-2" />
-              Checkbox grid
-            </SelectItem>
-            <DropdownMenuSeparator />
-            <SelectItem value="date">
-              <Calendar className="inline-block mr-2" />
-              Date
-            </SelectItem>
-            <SelectItem value="time">
-              <Timer className="inline-block mr-2" />
-              Time
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <Input
-        placeholder="Short answer text"
-        className="mb-2 border-0 drop-shadow-none border-b-1 border-secondary focus:border-0 focus:ring-0 rounded-none focus:drop-shadow-none"
-        value={currentQuestion.questionText}
-        onChange={handleQuestionChange}
-      />
-
-      {renderQuestionType()}
-
-      <div className="flex justify-end items-center mt-2">
-        <div className="flex items-center">
-          <Copy className="mr-2" />
-          <Trash2 className="mr-2" />
-          <Separator orientation="vertical" className="h-2" />
-          <Label htmlFor="required" className="text-sm mr-2">
-            Required
-          </Label>
-          <Switch
-            id="required"
-            checked={currentQuestion.required}
-            onCheckedChange={handleRequiredChange}
-          />
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="link" size="icon">
-                <EllipsisVertical />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-44">
-              <DropdownMenuLabel>Show</DropdownMenuLabel>
+      <div className="px-4">
+        <div className="flex justify-end mb-2">
+          <Select
+            value={currentField.type}
+            onValueChange={handleTypeChange}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Short answer" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="short_answer">
+                <Text className="inline-block mr-2" />
+                Short answer
+              </SelectItem>
+              <SelectItem value="paragraph">
+                <MessageSquare className="inline-block mr-2" />
+                Paragraph
+              </SelectItem>
               <DropdownMenuSeparator />
-              {renderDropdown()}
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <SelectItem value="multiple_choice">
+                <List className="inline-block mr-2" />
+                Multiple choice
+              </SelectItem>
+              <SelectItem value="checkboxes">
+                <CheckSquare className="inline-block mr-2" />
+                Checkboxes
+              </SelectItem>
+              <SelectItem value="dropdown">
+                <CircleChevronDown className="inline-block mr-2" />
+                Dropdown
+              </SelectItem>
+              <DropdownMenuSeparator />
+              <SelectItem value="file_upload">
+                <FileUp className="inline-block mr-2" />
+                File upload
+              </SelectItem>
+              <DropdownMenuSeparator />
+              <SelectItem value="linear_scale">
+                <SlidersVertical className="inline-block mr-2" />
+                Linear scale
+              </SelectItem>
+              <SelectItem value="rating">
+                <Star className="inline-block mr-2" />
+                Rating
+              </SelectItem>
+              <SelectItem value="multiple_choice_grid">
+                <Grip className="inline-block mr-2" />
+                Multiple choice grid
+              </SelectItem>
+              <SelectItem value="checkbox_grid">
+                <Grid className="inline-block mr-2" />
+                Checkbox grid
+              </SelectItem>
+              <DropdownMenuSeparator />
+              <SelectItem value="date">
+                <Calendar className="inline-block mr-2" />
+                Date
+              </SelectItem>
+              <SelectItem value="time">
+                <Timer className="inline-block mr-2" />
+                Time
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-		</div>
+
+        <Input
+          placeholder="Short answer text"
+          className="mb-2 border-0 drop-shadow-none border-b-1 border-secondary focus:border-0 focus:ring-0 rounded-none focus:drop-shadow-none"
+          value={currentField.type}
+          onChange={handleFieldChange}
+        />
+
+        {renderFieldType()}
+
+        <div className="flex justify-end items-center mt-2">
+          <div className="flex items-center">
+            <Copy className="mr-2" />
+            <Trash2 className="mr-2" />
+            <Separator orientation="vertical" className="h-2" />
+            <Label htmlFor="required" className="text-sm mr-2">
+              Required
+            </Label>
+            <Switch
+              id="required"
+              checked={currentField.required}
+              onCheckedChange={handleRequiredChange}
+            />
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="link" size="icon">
+                  <EllipsisVertical />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-44">
+                <DropdownMenuLabel>Show</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {renderDropdown()}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
       </div>
     </div>
   );

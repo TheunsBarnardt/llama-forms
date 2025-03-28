@@ -1,30 +1,21 @@
 "use client";
 
-import { DndContext, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor, closestCenter, Dragging } from "@dnd-kit/core";
+import { DndContext, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import QuestionItem, { Question } from "./question-item.component";
+import QuestionDesignItem from "./question-design-item.component";
 import { File, ImageIcon, PlaySquare, Text } from "lucide-react";
 
 // Load EditorJS dynamically
 import EditorJS, { OutputBlockData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
+import { Question } from "../../types/question.type";
+import { Field } from "../../types/field.type";
 
-interface QuestionsProps {
-  id: string;
-}
 
-const initialQuestion: Question = {
-  id: "1",
-  questionText: "Untitled Question",
-  questionType: "short_answer",
-  options: [],
-  required: false,
-};
-
-export function Questions(prop: QuestionsProps) {
-  const [questions, setQuestions] = useState<Question[]>([initialQuestion]);
+export function Questions(question: Question) {
+  const [fields, setFields] = useState<Field[]>(question.fields);
   const [formDescription, setFormDescription] = useState<OutputBlockData<string, { text: string }>[]>([]);
 
   const editorRef = useRef<EditorJS | null>(null);
@@ -37,20 +28,19 @@ export function Questions(prop: QuestionsProps) {
     useSensor(KeyboardSensor)
   );
 
-  // Handle drag end event
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDragEnd = (event: { active: any; over: any; }) => {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const oldIndex = questions.findIndex((question) => question.id === active.id);
-      const newIndex = questions.findIndex((question) => question.id === over?.id);
-
-      setQuestions((prevQuestions) => {
-        const updatedQuestions = [...prevQuestions];
-        updatedQuestions.splice(oldIndex, 1);
-        updatedQuestions.splice(newIndex, 0, prevQuestions[oldIndex]);
-        return updatedQuestions;
+      const oldIndex = fields.findIndex((field) => field.id === active.id); 
+      const newIndex = fields.findIndex((field) => field.id === over?.id);  
+  
+      setFields((prevField) => {
+        const updatedField = [...prevField];
+        updatedField.splice(oldIndex, 1);
+        updatedField.splice(newIndex, 0, prevField[oldIndex]);
+        return updatedField;
       });
     }
   };
@@ -84,14 +74,14 @@ export function Questions(prop: QuestionsProps) {
   }, []);
 
   const addQuestion = () => {
-    const newQuestion: Question = {
-      id: String(questions.length + 1),
-      questionText: "Untitled Question",
-      questionType: "short_answer",
-      options: [],
+    const newQuestion: Field = {
+      id: fields.length + 1,
+      name: "Untitled Question",
+      type: "short_answer",
       required: false,
+      options: [],
     };
-    setQuestions([...questions, newQuestion]);
+    setFields([...fields, newQuestion]);
   };
 
   return (
@@ -108,14 +98,13 @@ export function Questions(prop: QuestionsProps) {
         onDragEnd={handleDragEnd} 
         collisionDetection={closestCenter}
       >
-        <SortableContext items={questions.map((question) => question.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={fields.map((field) => field.id)} strategy={verticalListSortingStrategy}>
           <div className="mb-4">
-            {questions.map((question) => (
-              <QuestionItem 
-                key={question.id} 
-                question={question} 
-                id={question.id} 
-                // Apply CSS Utility for the dragged item
+            {fields.map((field) => (
+              <QuestionDesignItem 
+                key={field.id} 
+                field={field} 
+                id={field.id.toString()} 
                 draggingClassName="dragging"  // Add this class for dragging
               />
             ))}

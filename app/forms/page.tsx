@@ -1,22 +1,21 @@
-import { FormGridItem, FormGridItemProps } from './form-grid-item.component';
-import  data from './../../_resources/formsdata.json';
+import { FormGridItem } from './form-grid-item.component';
+import rawData from './../../_resources/formsdata.json';
+
+const data: Question[] = rawData.map((item) => ({
+  ...item,
+  fields: item.fields.map((field) => ({
+    ...field,
+    type: field.type as Question['fields'][number]['type'], // Cast type to match the union
+  })),
+}));
+import { Question } from '../types/question.type';
 
 export default function Page() {
-
-	function convertToIconDefinition(icon: string): import("@fortawesome/fontawesome-common-types").IconDefinition {
-		// Implement the function logic here or remove it if unnecessary
-		return { prefix: 'fas', iconName: icon as import("@fortawesome/fontawesome-common-types").IconName, icon: [512, 512, [], '', ''] }; // Example implementation
-	}
-
-	return (
-		<div className="inline-grid grid-cols-3 gap-4">
-			{data.map((form, index: number) => {
-				const transformedForm: FormGridItemProps = {
-					...form,
-					icon: convertToIconDefinition(form.icon), // Replace with a function to convert string to IconDefinition
-				};
-				return <FormGridItem key={index} {...transformedForm} />;
-			})}
-		</div>
-	);
+  return (
+    <div className="inline-grid grid-cols-3 gap-4">
+      {data.map((form: Question) => {
+        return <FormGridItem key={form.id} {...form} />;
+      })}
+    </div>
+  );
 }

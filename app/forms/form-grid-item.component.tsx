@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -35,18 +34,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
+import { Question } from "../types/question.type";
 
-export interface FormGridItemProps {
-  id: string;
-  thumbnail: string;
-  title: string;
-  icon: IconDefinition;
-  createDate: string;
-}
-
-export function FormGridItem(prop: FormGridItemProps) {
+export function FormGridItem(quotation : Question) {
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
-  const [newTitle, setNewTitle] = useState(prop.title);
+  const [newTitle, setNewTitle] = useState(quotation.title);
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
   const handleRename = () => {
@@ -57,12 +49,12 @@ export function FormGridItem(prop: FormGridItemProps) {
 
   const handleRemove = () => {
     // Implement your logic to remove the form here
-    console.log("Removed form:", prop.id);
+    console.log("Removed form:", quotation.id);
     setIsRemoveDialogOpen(false);
   };
 
   const handleOpenNewTab = () => {
-    window.open(`/forms/${prop.id}`, "_blank");
+    window.open(`/forms/${quotation.id}`, "_blank");
   };
 
   return (
@@ -72,8 +64,8 @@ export function FormGridItem(prop: FormGridItemProps) {
     >
       <CardContent className="p-0 h-40 bg-muted relative">
         <Image
-          src={prop.thumbnail}
-          alt={prop.title}
+          src={quotation.thumbnail}
+          alt={quotation.title}
           layout="fill"
           objectFit="cover"
           className="rounded-t-sm"
@@ -84,10 +76,10 @@ export function FormGridItem(prop: FormGridItemProps) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <h2 className="font-semibold text-left">{prop.title}</h2>
+                <h2 className="font-semibold text-left">{quotation.title}</h2>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{prop.title}</p>
+                <p>{quotation.title}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -95,7 +87,7 @@ export function FormGridItem(prop: FormGridItemProps) {
         </div>
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex text-sm text-muted-foreground items-center justify-start">
-            {prop.createDate}
+            {quotation.createDate}
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

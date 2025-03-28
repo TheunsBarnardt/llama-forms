@@ -1,42 +1,40 @@
 [
     {
-        "id": "1",
+        "id": 1,
         "thumbnail": "https://placehold.co/150x150",
         "title": "Contact Information Hennopspark",
-        "icon": "fa-user",
         "createDate": "2020-01-01",
         "fields": [
             {
-                "id": "1",
+                "id": 1,
                 "name": "Field 1",
-                "type": "text",
+                "type": "short_answer",
                 "required": true
             },
             {
-                "id": "2",
+                "id": 2,
                 "name": "Field 2",
-                "type": "text",
+                "type": "paragraph",
                 "required": false
             }
         ]
     },
     {
-        "id": "2",
+        "id": 2,
         "thumbnail": "https://placehold.co/150x150",
         "title": "Form 2",
-        "icon": "fa-user",
         "createDate": "2020-01-01",
         "fields": [
             {
-                "id": "3",
+                "id": 3,
                 "name": "Field 3",
-                "type": "text",
+                "type": "short_answer",
                 "required": true
             },
             {
-                "id": "4",
+                "id": 4,
                 "name": "Field 4",
-                "type": "text",
+                "type": "paragraph",
                 "required": false
             }
         ]

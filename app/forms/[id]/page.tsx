@@ -5,16 +5,13 @@ import { Settings } from "./settings.component";
 import { Responses } from "./responses.component";
 import { Questions } from "./questions.component";
 import product from "./../../../_resources/productdata.json";
+import QuestionRender from './question-render.component';
+import { Question } from "../../types/question.type";
 
-interface Props {
-  params: {
-    id: string;
-  };
-}
 
-export default function Page({ params }: Props) {
-  const { id } = params;
-
+export default function Page(question : Question) {
+  
+  console.log("Selected Quotation:", question);
   return (
     <div className="">
       <Tabs defaultValue="questions" className=" w-full ">
@@ -37,15 +34,24 @@ export default function Page({ params }: Props) {
           >
             Settings
           </TabsTrigger>
+          <TabsTrigger
+            value="preview"
+            className="rounded-none bg-background h-full data-[state=active]:shadow-none  border-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-blue-500"
+          >
+            Preview
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="questions">
-          <Questions id={id} />
+          <Questions {...question} />
         </TabsContent>
         <TabsContent value="responses">
           <Responses data={product} />
         </TabsContent>
         <TabsContent value="settings">
-          <Settings id={id} />
+          <Settings id={question.id} />
+        </TabsContent>
+        <TabsContent value="preview">
+          <QuestionRender {...question} />
         </TabsContent>
       </Tabs>
     </div>
