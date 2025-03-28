@@ -34,7 +34,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export interface FormGridItemProps {
@@ -46,7 +45,6 @@ export interface FormGridItemProps {
 }
 
 export function FormGridItem(prop: FormGridItemProps) {
-  const router = useRouter();
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [newTitle, setNewTitle] = useState(prop.title);
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
