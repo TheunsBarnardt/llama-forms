@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import {
   Calendar,
@@ -42,6 +41,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Paragraph } from "./paragraph.component";
+import { MultipleChoiceQuestion } from "./multipleChoice.component";
+import { CheckBoxQuestion } from "./checkbox.component";
+import { DropdownQuestion } from "./dropdown.component";
 
 export interface Question {
   id: string;
@@ -129,10 +132,11 @@ export default function QuestionItem({
     if (currentQuestion.options) {
       setCurrentQuestion({
         ...currentQuestion,
-        options: [...currentQuestion.options, ""],
+        options: [...currentQuestion.options, `Option ${currentQuestion.options.length + 1}`],
       });
     }
   };
+  
 
   const removeOption = (index: number) => {
     const newOptions = [...currentQuestion.options!];
@@ -145,68 +149,13 @@ export default function QuestionItem({
       case "short_answer":
         return <ShortAnswer />;
       case "paragraph":
-        return <Textarea placeholder="Paragraph text" className="mb-2" />;
+        return <Paragraph />;
       case "multiple_choice":
-        return (
-          currentQuestion.options?.map((option, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <input type="radio" id={`option-${index}`} className="mr-2" />
-              <Input
-                value={option}
-                onChange={(e) => handleOptionChange(e, index)}
-                className="flex-grow"
-              />
-              <button
-                onClick={() => removeOption(index)}
-                className="ml-2 text-red-500"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          )) ?? (
-            <button onClick={addOption} className="text-blue-500">
-              Add option
-            </button>
-          )
-        );
+        return <MultipleChoiceQuestion {...currentQuestion} />;
       case "checkboxes":
-        return (
-          currentQuestion.options?.map((option, index) => (
-            <div key={index} className="flex items-center mb-2">
-              <Checkbox id={`option-${index}`} className="mr-2" />
-              <Input
-                value={option}
-                onChange={(e) => handleOptionChange(e, index)}
-                className="flex-grow"
-              />
-              <button
-                onClick={() => removeOption(index)}
-                className="ml-2 text-red-500"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          )) ?? (
-            <button onClick={addOption} className="text-blue-500">
-              Add option
-            </button>
-          )
-        );
+        return <CheckBoxQuestion {...currentQuestion} />;
       case "dropdown":
-        return (
-          <Select>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select an option" />
-            </SelectTrigger>
-            <SelectContent>
-              {currentQuestion.options?.map((option, index) => (
-                <SelectItem key={index} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        );
+        return <DropdownQuestion {...currentQuestion} />;
       case "file_upload":
         return <Input type="file" className="mb-2" />;
       case "linear_scale":
