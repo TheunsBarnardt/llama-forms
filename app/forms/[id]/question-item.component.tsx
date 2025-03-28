@@ -39,6 +39,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 export interface Question {
   id: string;
@@ -60,7 +62,14 @@ export interface Question {
   required: boolean;
 }
 
-export default function QuestionItem({ question }: { question: Question }) {
+export default function QuestionItem({ question, id ,draggingClassName }: { question: Question, id: string ,draggingClassName?: string;}) {
+	const { attributes, listeners, setNodeRef, transform, transition,  isDragging } = useSortable({ id });
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		cursor: "move", // Make cursor a move icon when dragging
+		opacity: transform ? 0.5 : 1, // Reduce opacity when dragging
+	  };
   const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -308,7 +317,14 @@ export default function QuestionItem({ question }: { question: Question }) {
   };
 
   return (
-    <div className="flex flex-col border p-4 mb-4 gap-2 border-l-6 border-l-blue-500  bg-background rounded-lg">
+	<div 
+	ref={setNodeRef} 
+	{...listeners} 
+	{...attributes} 
+	className={`flex flex-col border p-4 mb-4 gap-2 border-l-6 border-l-blue-500 bg-background rounded-lg ${isDragging ? draggingClassName : ""}`}
+	style={style} // Apply the draggable style
+  >
+ 
       <div className="flex justify-end mb-2">
         <Select
           value={currentQuestion.questionType}

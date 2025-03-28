@@ -1,5 +1,7 @@
 "use client";
 
+import { DndContext, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor, closestCenter, Dragging } from "@dnd-kit/core";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import QuestionItem, { Question } from "./question-item.component";
@@ -28,13 +30,38 @@ export function Questions(prop: QuestionsProps) {
   const editorRef = useRef<EditorJS | null>(null);
   const editorContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Set up sensors for dragging
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor)
+  );
+
+  // Handle drag end event
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleDragEnd = (event: { active: any; over: any; }) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = questions.findIndex((question) => question.id === active.id);
+      const newIndex = questions.findIndex((question) => question.id === over?.id);
+
+      setQuestions((prevQuestions) => {
+        const updatedQuestions = [...prevQuestions];
+        updatedQuestions.splice(oldIndex, 1);
+        updatedQuestions.splice(newIndex, 0, prevQuestions[oldIndex]);
+        return updatedQuestions;
+      });
+    }
+  };
+
   useEffect(() => {
     if (!editorRef.current && editorContainerRef.current) {
       const editor = new EditorJS({
         holder: editorContainerRef.current,
         placeholder: "Form description...",
         autofocus: true,
-        minHeight: 40, 
+        minHeight: 40,
         tools: {
           header: Header,
         },
@@ -76,11 +103,25 @@ export function Questions(prop: QuestionsProps) {
         </div>
       </div>
 
-      <div className="mb-4">
-        {questions.map((question) => (
-          <QuestionItem key={question.id} question={question} />
-        ))}
-      </div>
+      <DndContext 
+        sensors={sensors} 
+        onDragEnd={handleDragEnd} 
+        collisionDetection={closestCenter}
+      >
+        <SortableContext items={questions.map((question) => question.id)} strategy={verticalListSortingStrategy}>
+          <div className="mb-4">
+            {questions.map((question) => (
+              <QuestionItem 
+                key={question.id} 
+                question={question} 
+                id={question.id} 
+                // Apply CSS Utility for the dragged item
+                draggingClassName="dragging"  // Add this class for dragging
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       <div className="fixed top-1/2 right-4 transform -translate-y-1/2 flex flex-col items-center bg-background p-4 rounded-lg shadow-lg">
         <Button variant="ghost" size="icon" className="mb-2" onClick={addQuestion}>
