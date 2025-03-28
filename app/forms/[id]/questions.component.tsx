@@ -68,8 +68,8 @@ export function Questions(prop: QuestionsProps) {
   };
 
   return (
-    <div className="p-4">
-      <div className="rounded-lg bg-background p-4 mb-4 border-t-8 border-t-fuchsia-600">
+    <div className="pt-4 w-6xl mx-auto">
+      <div className="rounded-lg bg-background p-4 mb-4 border-t-8 border-t-fuchsia-700">
         <div>
           <h1 className="text-2xl font-bold">Blank Quiz</h1>
           <div ref={editorContainerRef} className="mt-2 border p-2 rounded min-h-[50px] pb-0" />

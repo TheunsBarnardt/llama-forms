@@ -15,7 +15,7 @@ interface SettingsProps {
 
 export function Settings(prop: SettingsProps) {
   return (
-    <div className="flex flex-col gap-4 bg-background rounded-lg p-6">
+    <div className="flex flex-col gap-4 bg-background rounded-lg p-6  w-6xl mx-auto">
       <h1>Settings</h1>
       <Separator orientation="horizontal" />
       <div className="p-4">

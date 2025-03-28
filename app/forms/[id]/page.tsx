@@ -16,9 +16,9 @@ export default function Page({ params }: Props) {
   const { id } = params;
 
   return (
-    <div className="p-4">
+    <div className="">
       <Tabs defaultValue="questions" className=" w-full ">
-        <TabsList className="w-full p-0  bg-background justify-start border-b rounded-none">
+        <TabsList className="w-full p-0  bg-background justify-center border-b rounded-none h-14">
           <TabsTrigger
             value="questions"
             className="rounded-none bg-background h-full data-[state=active]:shadow-none  border-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-blue-500"
