@@ -138,6 +138,7 @@ export function FormGridItem(prop: FormGridItemProps) {
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
                 className="col-span-3"
+                spellCheck={true}
               />
             </div>
           </div>

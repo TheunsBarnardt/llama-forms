@@ -183,6 +183,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background"
           defaultValue={row.original.target}
           id={`${row.original.id}-target`}
+          spellCheck={true}
         />
       </form>
     ),

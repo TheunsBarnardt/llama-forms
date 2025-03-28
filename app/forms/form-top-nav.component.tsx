@@ -40,6 +40,7 @@ export function FormTopNav() {
           placeholder="Search..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          
         />
       </div>
 

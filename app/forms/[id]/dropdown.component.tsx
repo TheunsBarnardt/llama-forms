@@ -26,7 +26,7 @@ function DraggableOption({ option, index, onChange, onRemove }: {
         <GripVertical size={16} />
       </span>
       <span id={`option-${index}`} className="mr-2"   >{index + 1}</span>
-      <Input value={option} onChange={(e) => onChange(e, index)} className="flex-grow" />
+      <Input value={option} onChange={(e) => onChange(e, index)} className="flex-grow" spellCheck={true}/>
       <button onClick={() => onRemove(index)} className="ml-2 text-red-500">
         <Trash2 size={16} />
       </button>
