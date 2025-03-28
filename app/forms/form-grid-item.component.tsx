@@ -17,6 +17,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+  } from "@/components/ui/tooltip";
+
 export interface FormGridItemProps {
   id: string;
   thumbnail: string;
@@ -27,7 +34,7 @@ export interface FormGridItemProps {
 
 export function FormGridItem(prop: FormGridItemProps) {
   return (
-    <Card className="max-w-xs shadow-none py-0 w-52 h-64 rounded-sm">
+    <Card className="max-w-xs shadow-none py-0 w-52 h-64 rounded-sm gap-1">
       <CardContent className="p-0 h-40 bg-muted relative">
         <Image
           src={prop.thumbnail}
@@ -36,11 +43,20 @@ export function FormGridItem(prop: FormGridItemProps) {
           objectFit="cover"
           className="rounded-t-sm"
         />
-        <Separator orientation="horizontal" className="my-2 absolute bottom-0 w-full" />
       </CardContent>
-      <CardFooter className="flex flex-col">
+      <CardFooter className="flex flex-col px-4">
         <div className="w-full overflow-hidden text-ellipsis whitespace-nowrap">
-          <h2 className="font-semibold text-left">{prop.title}</h2>
+		<TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+		<h2 className="font-semibold text-left">{prop.title}</h2>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{prop.title}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+        <Separator orientation="horizontal" className="my-2  w-full p-0"  />
         </div>
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex text-sm text-muted-foreground items-center justify-start">

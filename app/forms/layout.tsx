@@ -2,13 +2,21 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Menu } from "lucide-react";
+import { Menu, MoonIcon, SunIcon } from "lucide-react";
 import { useState } from "react";
+import { useTheme } from "next-themes";
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const { setTheme, theme } = useTheme();
 
   return (
     <div className="flex flex-col h-screen">
@@ -40,9 +48,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Button variant="outline" size="icon">
-            <Menu />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Menu />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="mt-2">
+              <DropdownMenuItem
+                onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              >
+                {theme === "light" ? (
+                  <MoonIcon className="mr-2 h-4 w-4" />
+                ) : (
+                  <SunIcon className="mr-2 h-4 w-4" />
+                )}
+                Toggle Theme
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>CN</AvatarFallback>
@@ -50,7 +74,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </nav>
 
-      <main className="flex-grow overflow-y-auto w-6xl mx-auto pt-4">{children}</main>
+      <main className="flex-grow overflow-y-auto w-6xl mx-auto pt-4">
+        {children}
+      </main>
     </div>
   );
 }
