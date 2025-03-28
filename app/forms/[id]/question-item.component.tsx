@@ -18,6 +18,7 @@ import {
   FileUp,
   Grid,
   Grip,
+  GripHorizontal,
   List,
   MessageSquare,
   SlidersVertical,
@@ -62,14 +63,29 @@ export interface Question {
   required: boolean;
 }
 
-export default function QuestionItem({ question, id ,draggingClassName }: { question: Question, id: string ,draggingClassName?: string;}) {
-	const { attributes, listeners, setNodeRef, transform, transition,  isDragging } = useSortable({ id });
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-		cursor: "move", // Make cursor a move icon when dragging
-		opacity: transform ? 0.5 : 1, // Reduce opacity when dragging
-	  };
+export default function QuestionItem({
+  question,
+  id,
+  draggingClassName,
+}: {
+  question: Question;
+  id: string;
+  draggingClassName?: string;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    // Make cursor a move icon when dragging
+    opacity: transform ? 0.5 : 1, // Reduce opacity when dragging
+  };
   const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
@@ -317,14 +333,22 @@ export default function QuestionItem({ question, id ,draggingClassName }: { ques
   };
 
   return (
-	<div 
-	ref={setNodeRef} 
-	{...listeners} 
-	{...attributes} 
-	className={`flex flex-col border p-4 mb-4 gap-2 border-l-6 border-l-blue-500 bg-background rounded-lg ${isDragging ? draggingClassName : ""}`}
-	style={style} // Apply the draggable style
-  >
- 
+    <div
+      className={`flex flex-col border  pb-4 mb-4 gap-2 border-l-6 border-l-blue-500 bg-background rounded-lg ${
+        isDragging ? draggingClassName : ""
+      }`}
+      style={style}
+    >
+      <div
+        ref={setNodeRef}
+        {...listeners}
+        {...attributes}
+        className="flex items-center justify-center cursor-move text-gray-400 bg-gray-50"
+        // Apply the draggable style
+      >
+        <GripHorizontal />
+      </div>
+<div className="px-4">
       <div className="flex justify-end mb-2">
         <Select
           value={currentQuestion.questionType}
@@ -342,7 +366,7 @@ export default function QuestionItem({ question, id ,draggingClassName }: { ques
               <MessageSquare className="inline-block mr-2" />
               Paragraph
             </SelectItem>
-			<DropdownMenuSeparator />
+            <DropdownMenuSeparator />
             <SelectItem value="multiple_choice">
               <List className="inline-block mr-2" />
               Multiple choice
@@ -355,12 +379,12 @@ export default function QuestionItem({ question, id ,draggingClassName }: { ques
               <CircleChevronDown className="inline-block mr-2" />
               Dropdown
             </SelectItem>
-			<DropdownMenuSeparator />
+            <DropdownMenuSeparator />
             <SelectItem value="file_upload">
               <FileUp className="inline-block mr-2" />
               File upload
             </SelectItem>
-			<DropdownMenuSeparator />
+            <DropdownMenuSeparator />
             <SelectItem value="linear_scale">
               <SlidersVertical className="inline-block mr-2" />
               Linear scale
@@ -377,7 +401,7 @@ export default function QuestionItem({ question, id ,draggingClassName }: { ques
               <Grid className="inline-block mr-2" />
               Checkbox grid
             </SelectItem>
-			<DropdownMenuSeparator />
+            <DropdownMenuSeparator />
             <SelectItem value="date">
               <Calendar className="inline-block mr-2" />
               Date
@@ -415,7 +439,7 @@ export default function QuestionItem({ question, id ,draggingClassName }: { ques
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button variant="link" size="icon">
                 <EllipsisVertical />
               </Button>
             </DropdownMenuTrigger>
@@ -426,6 +450,7 @@ export default function QuestionItem({ question, id ,draggingClassName }: { ques
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+		</div>
       </div>
     </div>
   );
