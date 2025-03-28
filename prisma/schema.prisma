@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator typescriptInterfaces {
+  provider = "prisma-generator-typescript-interfaces"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id    String @id @default(uuid())
+  email String @unique
+  name  String?
+  image String?
+  forms Form[]
+}
+
+model Form {
+  id          String @id @default(uuid())
+  userId      String
+  user        User   @relation(fields: [userId], references: [id])
+  name        String
+  description String?
+  screenshot  String?
+  questions   Question[]
+  response Response[]  
+  isPublic    Boolean @default(false)
+  allowResponses Boolean @default(true)
+  theme       String? @default("default")
+}
+
+model Question {
+  id      String @id @default(uuid())
+  formId  String
+  form    Form   @relation(fields: [formId], references: [id])
+  type    String
+  text    String
+  required Boolean @default(false)
+}
+
+model Response {
+  id       String @id @default(uuid())
+  formId   String
+  form     Form   @relation(fields: [formId], references: [id])
+  answers  Json
+  createdAt DateTime @default(now())
+}
