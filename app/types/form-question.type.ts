@@ -17,4 +17,5 @@ export interface FormQuestion {
     options?: string[];
     required: boolean;
     validation?: string;
+    message ?: string[];
   }

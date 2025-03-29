@@ -1,44 +1,34 @@
-"use client"
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CheckboxQuestionRender } from "./checkbox-question-render.component";
-import { DropdownQuestionRender } from "./dropdown-question-render.component";
-import { MultipleChoiceQuestionRender } from "./multiple-choice-question-render.component";
-import { ParagraphRender } from "./paragraph-render.component";
-import { Form } from "../../types/form.type";
 import { ShortAnswerRender } from "./short-answer-render.component";
-import { FormProvider, useForm } from "react-hook-form";
+import { Form } from "@/app/types/form.type";
+import { UseFormReturn } from "react-hook-form";
+
+interface QuestionRenderProps{
+    form: Form,
+    methods: UseFormReturn<any>,
+    onSubmit: (data: any) => void
+}
 
 const questionComponents: { [key: string]: React.ComponentType<any> } = {
-  short_answer: ShortAnswerRender,
-  paragraph: ParagraphRender,
-  multiple_choice: MultipleChoiceQuestionRender,
-  checkboxes: CheckboxQuestionRender,
-  dropdown: DropdownQuestionRender,
+    short_answer: ShortAnswerRender,
 };
 
-export default function QuestionRender(form: Form) {
-  const methods = useForm();
-  const onSubmit = (data: any) => {
-    console.log("Form submitted:", data);
-  };
+export default function QuestionRender({ form, methods, onSubmit }: QuestionRenderProps) {
 
-  return (
-    <FormProvider {...methods}>  
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-
-      <h2>{form.title}</h2>
-      <div className="fields">
-        {form.questions.map((question) => {
-          const QuestionComponent = questionComponents[question.type];
-          return (
-            <div key={question.id} className="question">
-              <label>{question.name}</label>
-              <QuestionComponent required={question.required} />
+    return (
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+            <h2>{form.title}</h2>
+            <div className="fields">
+                {form.questions.map((question) => {
+                    const QuestionComponent = questionComponents[question.type];
+                    return (
+                        <div key={question.id} className="question">
+                            <label>{question.name}</label>
+                            <QuestionComponent {...question} />
+                        </div>
+                    );
+                })}
             </div>
-          );
-        })}
-      </div>
-      </form>
-      </FormProvider>
-  );
+        </form>
+    );
 }
