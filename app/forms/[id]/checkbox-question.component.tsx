@@ -5,7 +5,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { Input } from "@/components/ui/input";
 import { GripVertical, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Field } from "../../types/field.type";
+import { FormQuestion } from "@/app/types/form-question.type";
+
 
 // Draggable Option Component
 function DraggableOption({ option, index, onChange, onRemove }: {
@@ -36,28 +37,28 @@ function DraggableOption({ option, index, onChange, onRemove }: {
 }
 
 // Multiple Choice Component
-export function CheckBoxQuestion(field: Field) {
-  const [currentField, setCurrentQuestion] = useState<Field>(field);
+export function CheckBoxQuestion(question: FormQuestion) {
+  const [currentQuestion, setCurrentQuestion] = useState<FormQuestion>(question);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const newOptions = [...currentField.options!];
+    const newOptions = [...currentQuestion.options!];
     newOptions[index] = e.target.value;
-    setCurrentQuestion({ ...currentField, options: newOptions });
+    setCurrentQuestion({ ...currentQuestion, options: newOptions });
   };
 
   const addOption = () => {
     setCurrentQuestion({
-      ...currentField,
-      options: [...(currentField.options || []), `Option ${(currentField.options?.length || 0) + 1}`],
+      ...currentQuestion,
+      options: [...(currentQuestion.options || []), `Option ${(currentQuestion.options?.length || 0) + 1}`],
     });
   };
 
   const removeOption = (index: number) => {
-    const newOptions = [...currentField.options!];
+    const newOptions = [...currentQuestion.options!];
     newOptions.splice(index, 1);
-    setCurrentQuestion({ ...currentField, options: newOptions });
+    setCurrentQuestion({ ...currentQuestion, options: newOptions });
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,9 +75,9 @@ export function CheckBoxQuestion(field: Field) {
   return (
     <div>
       <DndContext sensors={sensors} onDragEnd={handleDragEnd} collisionDetection={closestCenter}>
-        <SortableContext items={currentField.options?.map((_, i) => i) || []} strategy={verticalListSortingStrategy}>
+        <SortableContext items={currentQuestion.options?.map((_, i) => i) || []} strategy={verticalListSortingStrategy}>
          <div className="space-y-2">
-            {currentField.options?.map((option, index) => (
+            {currentQuestion.options?.map((option, index) => (
               <DraggableOption key={index} option={option} index={index} onChange={handleOptionChange} onRemove={removeOption} />
             ))}
             </div>

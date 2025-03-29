@@ -3,9 +3,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useMemo } from "react";
-import { Field } from "../../types/field.type";
+import { FormQuestion } from "../../types/form-question.type";
 
-export function ParagraphRender(field:Field) {
+export function ParagraphRender(question:FormQuestion) {
 	const {
 	  register,
 	  formState: { errors },
@@ -14,13 +14,13 @@ export function ParagraphRender(field:Field) {
 	const validationSchema = useMemo(() => {
 		let schema = z.string();
 	
-		if (field.required) {
+		if (question.required) {
 		  schema = schema.min(1, "This field is required");
 		}
 	
-		if (field.validation) {
+		if (question.validation) {
 		  try {
-			const regex = new RegExp(field.validation);
+			const regex = new RegExp(question.validation);
 			schema = schema.refine((value) => regex.test(value), {
 				message: "Invalid format",
 			}) as unknown as z.ZodString;
@@ -30,22 +30,22 @@ export function ParagraphRender(field:Field) {
 		}
 	
 		return schema;
-	}, [field.required, field.validation]);
+	}, [question.required, question.validation]);
 
 	return (
 	  <div className="flex flex-col gap-2">
-		<Label htmlFor={field.id.toString()} className="font-medium">
-		  {field.name} {field.required && <span className="text-red-500">*</span>}
+		<Label htmlFor={question.id.toString()} className="font-medium">
+		  {question.name} {question.required && <span className="text-red-500">*</span>}
 		</Label>
 		<Textarea
-		  id={field.id.toString()}
+		  id={question.id.toString()}
 		  placeholder="Your answer"
-		  {...register(field.id.toString(), { required: field.required, validate: (value) => {
+		  {...register(question.id.toString(), { required: question.required, validate: (value) => {
 			const parsed = validationSchema.safeParse(value);
 			return parsed.success ? true : parsed.error.errors[0]?.message;
 		  } })}
 		/>
-		{errors[field.id] && <p className="text-red-500 text-sm">{errors[field.id]?.message?.toString()}</p>}
+		{errors[question.id] && <p className="text-red-500 text-sm">{errors[question.id]?.message?.toString()}</p>}
 	  </div>
 	);
 }

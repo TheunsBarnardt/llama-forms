@@ -34,11 +34,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { Question } from "../types/question.type";
+import { Form } from "../types/form.type";
 
-export function FormGridItem(quotation : Question) {
+export function FormGridItem(form : Form) {
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
-  const [newTitle, setNewTitle] = useState(quotation.title);
+  const [newTitle, setNewTitle] = useState(form.title);
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
   const handleRename = () => {
@@ -49,19 +49,17 @@ export function FormGridItem(quotation : Question) {
 
   const handleRemove = () => {
     // Implement your logic to remove the form here
-    console.log("Removed form:", quotation.id);
+    console.log("Removed form:", form.id);
     setIsRemoveDialogOpen(false);
   };
 
   const handleOpen = () => {
-    const quotationJson = encodeURIComponent(JSON.stringify(quotation));
-    const url = `/forms/${quotation.id}?data=${quotationJson}`;
+    const url = `/forms/${form.id}`;
     window.open(url);
   };
 
   const handleOpenNewTab = () => {
-    const quotationJson = encodeURIComponent(JSON.stringify(quotation));
-    const url = `/forms/${quotation.id}?data=${quotationJson}`;
+    const url = `/forms/${form.id}`;
     window.open(url, "_blank");
   };
 
@@ -72,8 +70,8 @@ export function FormGridItem(quotation : Question) {
     >
       <CardContent className="p-0 h-40 bg-muted relative">
         <Image
-          src={quotation.thumbnail}
-          alt={quotation.title}
+          src={form.thumbnail}
+          alt={form.title}
           layout="fill"
           objectFit="cover"
           className="rounded-t-sm"
@@ -85,10 +83,10 @@ export function FormGridItem(quotation : Question) {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <h2 className="font-semibold text-left">{quotation.title}</h2>
+                <h2 className="font-semibold text-left">{form.title}</h2>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{quotation.title}</p>
+                <p>{form.title}</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -96,7 +94,7 @@ export function FormGridItem(quotation : Question) {
         </div>
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex text-sm text-muted-foreground items-center justify-start">
-            {quotation.createDate}
+            {form.createDate}
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

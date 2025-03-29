@@ -41,17 +41,17 @@ import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Paragraph } from "./paragraph.component";
-import { MultipleChoiceQuestion } from "./multipleChoice.component";
-import { CheckBoxQuestion } from "./checkbox.component";
-import { DropdownQuestion } from "./dropdown.component";
-import { Field } from "../../types/field.type";
+import { MultipleChoiceQuestion } from "./multiple-choice-question.component";
+import { CheckBoxQuestion } from "./checkbox-question.component";
+import { DropdownQuestion } from "./dropdown-question.component";
+import {FormQuestion } from "../../types/form-question.type";
 
 export default function QuestionDesignItem({
   field,
   id,
   draggingClassName,
 }: {
-  field: Field;
+  field: FormQuestion;
   id: string;
   draggingClassName?: string;
 }) {
@@ -69,7 +69,7 @@ export default function QuestionDesignItem({
     // Make cursor a move icon when dragging
     opacity: transform ? 0.5 : 1, // Reduce opacity when dragging
   };
-  const [currentField, setCurrentField] = useState<Field>(field);
+  const [currentField, setCurrentField] = useState<FormQuestion>(field);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const handleTagChange = (tag: string, checked: boolean) => {
@@ -80,7 +80,7 @@ export default function QuestionDesignItem({
     }
   };
 
-  const handleFieldChange = (
+  const handleQuestionChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setCurrentField({ ...currentField, name: e.target.value });
@@ -89,7 +89,7 @@ export default function QuestionDesignItem({
   const handleTypeChange = (value: string) => {
     setCurrentField({
       ...currentField,
-      type: value as Field["type"],
+      type: value as FormQuestion["type"],
     });
   };
 
@@ -99,7 +99,7 @@ export default function QuestionDesignItem({
   };
 
 
-  const renderFieldType = () => {
+  const renderQuestionType = () => {
     switch (currentField.type) {
       case "short_answer":
         return <ShortAnswer />;
@@ -322,10 +322,10 @@ export default function QuestionDesignItem({
           placeholder="Short answer text"
           className="mb-2 border-0 drop-shadow-none border-b-1 border-secondary focus:border-0 focus:ring-0 rounded-none focus:drop-shadow-none"
           value={currentField.type}
-          onChange={handleFieldChange}
+          onChange={handleQuestionChange}
         />
 
-        {renderFieldType()}
+        {renderQuestionType()}
 
         <div className="flex justify-end items-center mt-2">
           <div className="flex items-center">

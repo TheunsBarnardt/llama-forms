@@ -4,7 +4,7 @@
         "thumbnail": "https://placehold.co/150x150",
         "title": "Contact Information Hennopspark",
         "createDate": "2020-01-01",
-        "fields": [
+        "questions": [
             {
                 "id": 1,
                 "name": "Field 1",
@@ -24,7 +24,7 @@
         "thumbnail": "https://placehold.co/150x150",
         "title": "Form 2",
         "createDate": "2020-01-01",
-        "fields": [
+        "questions": [
             {
                 "id": 3,
                 "name": "Field 3",

@@ -2,24 +2,18 @@
 
 import { DndContext, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import QuestionDesignItem from "./question-design-item.component";
 import { File, ImageIcon, PlaySquare, Text } from "lucide-react";
 
-// Load EditorJS dynamically
-import EditorJS, { OutputBlockData } from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import { Question } from "../../types/question.type";
-import { Field } from "../../types/field.type";
+
+import { Form } from "../../types/form.type";
+import { FormQuestion } from "../../types/form-question.type";
 
 
-export function Questions(question: Question) {
-  const [fields, setFields] = useState<Field[]>(question.fields);
-  const [formDescription, setFormDescription] = useState<OutputBlockData<string, { text: string }>[]>([]);
-
-  const editorRef = useRef<EditorJS | null>(null);
-  const editorContainerRef = useRef<HTMLDivElement | null>(null);
+export function Forms(form: Form) {
+  const [questions, setQuestions] = useState<FormQuestion[]>(form.questions);
 
   // Set up sensors for dragging
   const sensors = useSensors(
@@ -33,10 +27,10 @@ export function Questions(question: Question) {
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const oldIndex = fields.findIndex((field) => field.id === active.id); 
-      const newIndex = fields.findIndex((field) => field.id === over?.id);  
+      const oldIndex = questions.findIndex((field) => field.id === active.id); 
+      const newIndex = questions.findIndex((field) => field.id === over?.id);  
   
-      setFields((prevField) => {
+      setQuestions((prevField) => {
         const updatedField = [...prevField];
         updatedField.splice(oldIndex, 1);
         updatedField.splice(newIndex, 0, prevField[oldIndex]);
@@ -45,51 +39,22 @@ export function Questions(question: Question) {
     }
   };
 
-  useEffect(() => {
-    if (!editorRef.current && editorContainerRef.current) {
-      const editor = new EditorJS({
-        holder: editorContainerRef.current,
-        placeholder: "Form description...",
-        autofocus: true,
-        minHeight: 40,
-        tools: {
-          header: Header,
-        },
-        data: {
-          blocks: formDescription,
-        },
-        async onChange() {
-          const output = await editor.save();
-          setFormDescription(output?.blocks?.[0]?.data?.text || "");
-        },
-      });
-
-      editorRef.current = editor;
-    }
-
-    return () => {
-      editorRef.current?.destroy?.();
-      editorRef.current = null;
-    };
-  }, []);
-
   const addQuestion = () => {
-    const newQuestion: Field = {
-      id: fields.length + 1,
+    const newQuestion: FormQuestion = {
+      id: questions.length + 1,
       name: "Untitled Question",
       type: "short_answer",
       required: false,
       options: [],
     };
-    setFields([...fields, newQuestion]);
+    setQuestions([...questions, newQuestion]);
   };
 
   return (
     <div className="pt-4 w-6xl mx-auto">
       <div className="rounded-lg bg-background p-4 mb-4 border-t-8 border-t-fuchsia-700">
         <div>
-          <h1 className="text-2xl font-bold">Blank Quiz</h1>
-          <div ref={editorContainerRef} className="mt-2 border p-2 rounded min-h-[50px] pb-0" />
+          <h1 className="text-2xl font-bold">{form.title}</h1>
         </div>
       </div>
 
@@ -98,9 +63,9 @@ export function Questions(question: Question) {
         onDragEnd={handleDragEnd} 
         collisionDetection={closestCenter}
       >
-        <SortableContext items={fields.map((field) => field.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={questions.map((field) => field.id)} strategy={verticalListSortingStrategy}>
           <div className="mb-4">
-            {fields.map((field) => (
+            {questions.map((field) => (
               <QuestionDesignItem 
                 key={field.id} 
                 field={field} 

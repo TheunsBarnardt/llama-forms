@@ -1,11 +1,12 @@
 import { useFormContext } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Field } from "../../types/field.type";
+import { FormQuestion } from "@/app/types/form-question.type";
+
 
 
 // Dropdown Render Component (For Form Submission)
-export function DropdownQuestionRender(field: Field) {
+export function DropdownQuestionRender(question: FormQuestion) {
   const {
     setValue,
     formState: { errors },
@@ -14,15 +15,15 @@ export function DropdownQuestionRender(field: Field) {
   return (
     <div className="space-y-2">
       <Label className="font-medium">
-        {field.name} {field.required && <span className="text-red-500">*</span>}
+        {question.name} {question.required && <span className="text-red-500">*</span>}
       </Label>
 
-      <Select onValueChange={(value) => setValue(field.id.toString(), value)}>
+      <Select onValueChange={(value) => setValue(question.id.toString(), value)}>
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>
         <SelectContent>
-          {field.options?.map((option, index) => (
+          {question.options?.map((option, index) => (
             <SelectItem key={index} value={option}>
               {option}
             </SelectItem>
@@ -30,8 +31,8 @@ export function DropdownQuestionRender(field: Field) {
         </SelectContent>
       </Select>
 
-      {errors[field.id] && (
-        <p className="text-red-500 text-sm">{errors[field.id]?.message?.toString()}</p>
+      {errors[question.id] && (
+        <p className="text-red-500 text-sm">{errors[question.id]?.message?.toString()}</p>
       )}
     </div>
   );

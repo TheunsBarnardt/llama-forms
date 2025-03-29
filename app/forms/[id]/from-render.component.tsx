@@ -4,7 +4,7 @@ import { CheckboxQuestionRender } from "./checkbox-question-render.component";
 import { DropdownQuestionRender } from "./dropdown-question-render.component";
 import { MultipleChoiceQuestionRender } from "./multiple-choice-question-render.component";
 import { ParagraphRender } from "./paragraph-render.component";
-import { Question } from "../../types/question.type";
+import { Form } from "../../types/form.type";
 import { ShortAnswerRender } from "./short-answer-render.component";
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -16,7 +16,7 @@ const questionComponents: { [key: string]: React.ComponentType<any> } = {
   dropdown: DropdownQuestionRender,
 };
 
-export default function QuestionRender(question: Question) {
+export default function QuestionRender(form: Form) {
   const methods = useForm();
   const onSubmit = (data: any) => {
     console.log("Form submitted:", data);
@@ -26,14 +26,14 @@ export default function QuestionRender(question: Question) {
     <FormProvider {...methods}>  
       <form onSubmit={methods.handleSubmit(onSubmit)}>
 
-      <h2>{question.title}</h2>
+      <h2>{form.title}</h2>
       <div className="fields">
-        {question.fields.map((field) => {
-          const FieldComponent = questionComponents[field.type];
+        {form.questions.map((question) => {
+          const QuestionComponent = questionComponents[question.type];
           return (
-            <div key={field.id} className="field">
-              <label>{field.name}</label>
-              <FieldComponent required={field.required} />
+            <div key={question.id} className="question">
+              <label>{question.name}</label>
+              <QuestionComponent required={question.required} />
             </div>
           );
         })}

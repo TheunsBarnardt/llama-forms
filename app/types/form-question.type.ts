@@ -1,4 +1,4 @@
-export interface Field {
+export interface FormQuestion {
     id: number;
     name: string;
     type:
