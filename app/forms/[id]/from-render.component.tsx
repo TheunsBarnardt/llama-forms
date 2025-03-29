@@ -1,34 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ShortAnswerRender } from "./short-answer-render.component";
-import { Form } from "@/app/types/form.type";
-import { UseFormReturn } from "react-hook-form";
+"use client";
 
-interface QuestionRenderProps{
-    form: Form,
-    methods: UseFormReturn<any>,
-    onSubmit: (data: any) => void
-}
+import { Separator } from "@/components/ui/separator";
+import { Form } from "../../types/form.type";
+import  ParagraphRender  from "./paragraph-render.component";
+import ShortAnswerRender from "./short-answer-render.component";
 
-const questionComponents: { [key: string]: React.ComponentType<any> } = {
-    short_answer: ShortAnswerRender,
-};
 
-export default function QuestionRender({ form, methods, onSubmit }: QuestionRenderProps) {
+export default function QuestionRender(form: Form) {
+  return (
+    <div className="flex flex-col gap-4 bg-background rounded-lg p-6  w-6xl mx-auto">
+    <h1>{form.title}</h1>
+    <Separator orientation="horizontal" />
 
-    return (
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <h2>{form.title}</h2>
-            <div className="fields">
-                {form.questions.map((question) => {
-                    const QuestionComponent = questionComponents[question.type];
-                    return (
-                        <div key={question.id} className="question">
-                            <label>{question.name}</label>
-                            <QuestionComponent {...question} />
-                        </div>
-                    );
-                })}
-            </div>
-        </form>
-    );
+  
+    {form.questions.map((question) => {
+      const questionComponents: Record<string, React.ComponentType<any>> = {
+        short_answer: ShortAnswerRender,
+        paragraph: ParagraphRender      
+      };
+
+      const QuestionComponent = questionComponents[question.type];
+      return (
+        <div key={question.id} >
+              <QuestionComponent {...question} />
+          </div>
+      );
+    })}
+    </div>
+  );
 }
