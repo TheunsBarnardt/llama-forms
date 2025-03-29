@@ -22,36 +22,55 @@ model User {
   email String @unique
   name  String?
   image String?
-  forms Form[]
 }
 
+// schema.prisma
+
 model Form {
-  id          String @id @default(uuid())
-  userId      String
-  user        User   @relation(fields: [userId], references: [id])
-  name        String
+  id          Int             @id @default(autoincrement())
+  thumbnail   String
+  title       String
   description String?
-  screenshot  String?
+  createDate  DateTime
+  changeDate  DateTime
   questions   Question[]
-  response Response[]  
-  isPublic    Boolean @default(false)
-  allowResponses Boolean @default(true)
-  theme       String? @default("default")
+  responses   Response[]
 }
 
 model Question {
-  id      String @id @default(uuid())
-  formId  String
-  form    Form   @relation(fields: [formId], references: [id])
-  type    String
-  text    String
-  required Boolean @default(false)
+  id          Int             @id @default(autoincrement())
+  name        String
+  description String?
+  type        QuestionType
+  options     Json?
+  required    Boolean
+  validation  String?         // Optional field for validation pattern
+  message     Json?
+  createDate  DateTime
+  changeDate  DateTime
+  formId      Int
+  form        Form            @relation(fields: [formId], references: [id])
 }
 
 model Response {
-  id       String @id @default(uuid())
-  formId   String
-  form     Form   @relation(fields: [formId], references: [id])
-  answers  Json
-  createdAt DateTime @default(now())
+  id          Int             @id @default(autoincrement())
+  name        String
+  value       Json
+  formId      Int
+  form        Form            @relation(fields: [formId], references: [id])
+}
+
+enum QuestionType {
+  short_answer
+  paragraph
+  multiple_choice
+  checkboxes
+  dropdown
+  file_upload
+  linear_scale
+  rating
+  multiple_choice_grid
+  checkbox_grid
+  date
+  time
 }

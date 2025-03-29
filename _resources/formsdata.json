@@ -3,11 +3,13 @@
         "id": 1,
         "thumbnail": "https://placehold.co/150x150",
         "title": "Contact Information Hennopspark",
+        "description": "Contact Information Hennopspark",
         "createDate": "2020-01-01",
         "questions": [
             {
                 "id": 1,
                 "name": "Field 1",
+                "description": "Contact Information Hennopspark",
                 "type": "short_answer",
                 "required": true
             },
