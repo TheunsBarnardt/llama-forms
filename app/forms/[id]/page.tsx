@@ -51,7 +51,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <Settings id={form.id} />
                 </TabsContent>
                 <TabsContent value="preview">
-                    <QuestionRender {...form} />
+                    <QuestionRender form={form} />
                 </TabsContent>
             </Tabs>
         </div>

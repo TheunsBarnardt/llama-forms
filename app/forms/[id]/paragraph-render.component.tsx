@@ -1,15 +1,26 @@
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { FormQuestion } from "../../types/form-question.type";
+import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
-export default function ParagraphRender(question: FormQuestion) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function ParagraphRender({ question, form }: { question: FormQuestion; form: any }) {
   return (
-    <div className="flex flex-col gap-2">
-      <Label htmlFor={question.id.toString()} className="font-medium">
-        {question.name}{" "}
-        {question.required && <span className="text-red-500">*</span>}
-      </Label>
-      <Textarea id={question.id.toString()} placeholder="Your answer" />
-    </div>
+	<FormField
+	control={form.control}
+	name={question.id.toString()}
+	render={({ field }) => (
+	  <FormItem>
+		<FormLabel>{question.name}</FormLabel>
+		<FormControl>
+		  <Textarea		
+			className="resize-none"
+			{...field}
+		  />
+		</FormControl>
+		<FormDescription>You can @mention other users and organizations.</FormDescription>
+		<FormMessage />
+	  </FormItem>
+	)}
+  />
   );
 }
