@@ -35,7 +35,7 @@ export default async function Page({ params: { id } }: PageProps) {
           <TabsTrigger value="preview" className="rounded-none bg-background h-full data-[state=active]:shadow-none border-transparent data-[state=active]:border-b-2 data-[state=active]:border-b-blue-500">Preview</TabsTrigger>
         </TabsList>
         <TabsContent value="questions">
-          {data && <Forms {...data} />}
+         <Forms id={formId} />
         </TabsContent>
         <TabsContent value="responses">
           <Responses data={product} />
@@ -44,7 +44,7 @@ export default async function Page({ params: { id } }: PageProps) {
           {data && <Settings id={data.id} />}
         </TabsContent>
         <TabsContent value="preview">
-          {data && <QuestionRender form={data} />}
+          <QuestionRender id={formId} />
         </TabsContent>
       </Tabs>
     </div>

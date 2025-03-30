@@ -2,16 +2,31 @@
 
 import { DndContext, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useState, useCallback } from "react"; // Import useCallback
+import { useState, useCallback, useEffect } from "react"; // Import useCallback
 import { Button } from "@/components/ui/button";
 import QuestionDesignItem from "./question-design-item.component";
 import { File, ImageIcon, PlaySquare, Text } from "lucide-react";
 import { Form, Question } from "@/prisma/interfaces";
 import { addQuestion } from "./actions"; // Import the server action
+import { getForm } from "../actions";
 
-//TODO : must use id and load form here
-export function Forms(form: Form) {
-  const [questions, setQuestions] = useState<Question[]>(form.questions || []);
+export function Forms({ id }: { id: number }) {
+
+  const [form, setForm] = useState<Form | undefined>(undefined);
+  const [questions, setQuestions] = useState<Question[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getForm(id);
+      setForm(response);
+      if(response) {
+        setQuestions(response.questions || []);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -38,6 +53,10 @@ export function Forms(form: Form) {
 
   const handleAddQuestion = useCallback(async () => {
     try {
+      if (!form) {
+        console.error("Form is undefined. Cannot add question.");
+        return;
+      }
       const newQuestionData = await addQuestion(form.id); // Call the server action
 
       if (newQuestionData) {
@@ -48,7 +67,7 @@ export function Forms(form: Form) {
     } catch (error) {
       console.error("Error adding question:", error);
     }
-  }, [form.id]);
+  }, [form?.id]);
 
   const handleQuestionDelete = (deletedQuestionId: number) => {
     setQuestions((prevQuestions) =>
@@ -60,7 +79,7 @@ export function Forms(form: Form) {
     <div className="pt-4 w-6xl mx-auto">
       <div className="rounded-lg bg-background p-4 mb-4 border-t-8 border-t-fuchsia-700">
         <div>
-          <h1 className="text-2xl font-bold">{form.title}</h1>
+          <h1 className="text-2xl font-bold">{form?.title}</h1>
         </div>
       </div>
 
