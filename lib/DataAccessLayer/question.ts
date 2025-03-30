@@ -7,7 +7,6 @@ import { Question } from "@/prisma/interfaces";
 
 const question_dal: IDataAccessLayer<Question> = {
   count: cache(async (id: number): Promise<NextResponse<number>> => {
-    debugger;
     const data = await db.question.count({
       where: { formId: id },
     });

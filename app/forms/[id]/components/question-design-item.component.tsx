@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import {
-
   Calendar,
   CheckSquare,
   CircleChevronDown,
@@ -48,16 +47,26 @@ import { MultipleChoiceQuestion } from "./multiple-choice-question.component";
 import { CheckBoxQuestion } from "./checkbox-question.component";
 import { DropdownQuestion } from "./dropdown-question.component";
 import { Question } from "@/prisma/interfaces";
-import { deleteQuestion, editQuestion } from "./actions"; // Import actions
+import { deleteQuestion, editQuestion } from "./actions";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function QuestionDesignItem({
   field,
   id,
   draggingClassName,
+  onDelete, // Added prop
 }: {
   field: Question;
   id: string;
   draggingClassName?: string;
+  onDelete: (deletedQuestionId: number) => void; // Added prop type
 }) {
   const {
     attributes,
@@ -74,6 +83,7 @@ export default function QuestionDesignItem({
   };
   const [currentField, setCurrentField] = useState<Question>(field);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
   const handleTagChange = (tag: string, checked: boolean) => {
     if (checked) {
@@ -88,25 +98,33 @@ export default function QuestionDesignItem({
   ) => {
     const updatedField = { ...currentField, name: e.target.value };
     setCurrentField(updatedField);
-    await editQuestion(updatedField); // Call editQuestion action
+    await editQuestion(updatedField);
   };
 
   const handleTypeChange = async (value: string) => {
     const updatedField = { ...currentField, type: value as Question["type"] };
     setCurrentField(updatedField);
-    await editQuestion(updatedField); // Call editQuestion action
+    await editQuestion(updatedField);
   };
 
   const handleRequiredChange = async (checked: boolean) => {
     const updatedField = { ...currentField, required: checked };
     setCurrentField(updatedField);
-    await editQuestion(updatedField); // Call editQuestion action
+    await editQuestion(updatedField);
   };
 
   const handleDelete = async () => {
-    await deleteQuestion(currentField.id);
+    try {
+      await deleteQuestion(currentField.id);
+      debugger;
+      setIsRemoveDialogOpen(false); // Close the dialog
+      onDelete(currentField.id); // Call the callback
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      setIsRemoveDialogOpen(false); // Close dialog even on error
+      // Optionally, show an error message to the user
+    }
   };
-
   const renderQuestionType = () => {
     switch (currentField.type) {
       case "short_answer":
@@ -236,7 +254,7 @@ export default function QuestionDesignItem({
           </>
         );
       default:
-        return null; // or handle other cases
+        return null;
     }
   };
 
@@ -262,7 +280,7 @@ export default function QuestionDesignItem({
               <SelectValue placeholder="Short answer" />
             </SelectTrigger>
             <SelectContent>
-            <SelectItem value="short_answer">
+              <SelectItem value="short_answer">
                 <Text className="inline-block mr-2" />
                 Short answer
               </SelectItem>
@@ -330,7 +348,7 @@ export default function QuestionDesignItem({
         <div className="flex justify-end items-center mt-2">
           <div className="flex items-center">
             <Copy className="mr-2" />
-            <Trash2 className="mr-2" onClick={handleDelete} />
+            <Trash2 className="mr-2" onClick={() => setIsRemoveDialogOpen(true)} />
             <Separator orientation="vertical" className="h-2" />
             <Label htmlFor="required" className="text-sm mr-2">
               Required
@@ -356,6 +374,28 @@ export default function QuestionDesignItem({
           </div>
         </div>
       </div>
+      <Dialog open={isRemoveDialogOpen} onOpenChange={setIsRemoveDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Remove Question</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to remove this question?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setIsRemoveDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button type="button" onClick={handleDelete}>
+              Remove
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

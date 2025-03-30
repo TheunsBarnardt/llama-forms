@@ -50,6 +50,12 @@ export function Forms(form: Form) {
     }
   }, [form.id]);
 
+  const handleQuestionDelete = (deletedQuestionId: number) => {
+    setQuestions((prevQuestions) =>
+      prevQuestions.filter((question) => question.id !== deletedQuestionId)
+    );
+  };
+
   return (
     <div className="pt-4 w-6xl mx-auto">
       <div className="rounded-lg bg-background p-4 mb-4 border-t-8 border-t-fuchsia-700">
@@ -71,6 +77,7 @@ export function Forms(form: Form) {
                 field={field}
                 id={field.id.toString()}
                 draggingClassName="dragging"
+                onDelete={handleQuestionDelete} 
               />
             ))}
           </div>
