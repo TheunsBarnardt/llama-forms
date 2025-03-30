@@ -1,6 +1,6 @@
 "use client";
 
-import { FormTopNav } from "./form-top-nav.component";
+import { FormTopNav } from "./components/form-top-nav.component";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
 

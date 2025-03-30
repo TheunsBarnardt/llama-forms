@@ -34,7 +34,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { Form } from "../types/form.type";
+import { Form } from "@/prisma/interfaces";
+import { formatDate } from "@/lib/utils";
+
 
 export function FormGridItem(form : Form) {
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
@@ -94,7 +96,7 @@ export function FormGridItem(form : Form) {
         </div>
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex text-sm text-muted-foreground items-center justify-start">
-            {form.createDate}
+            {formatDate(form.changeDate)}
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

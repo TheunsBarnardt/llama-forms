@@ -1,37 +1,23 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings } from "./settings.component";
-import { Responses } from "./responses.component";
-import { Forms } from "./form-design.component";
-import QuestionRender from './from-render.component';
-import { Form } from '../../types/form.type';
+import { Settings } from "./components/settings.component";
+import { Responses } from "./components/responses.component";
+import { Forms } from "./components/form-design.component";
+import QuestionRender from './components/from-render.component';
 import product from "./../../../_resources/productdata.json";
-import { use } from 'react'; // Import use from react
-
-function getFormData(id: number) {
-    const mockData = {
-        id: id,
-        thumbnail: "https://placehold.co/150x150",
-        title: `Form ${id.toString()}`,
-        createDate: "2020-01-01",
-        questions: [
-            { id: 3, name: "Field 3", type: "short_answer", required: true },
-            { id: 4, name: "Field 4", type: "paragraph", required: false },
-        ],
-        responses: [],
-    } as Form;
-    console.log("Form data:", mockData);
-    return mockData;
-}
+import { useEffect, useState } from 'react'; // Import use from react
+import { Form } from "@/prisma/interfaces";
 
 export default function Page({ params }: { params: { id: string } }) {
-    const unwrappedParams = use(Promise.resolve(params)); // unwrap the params promise
-    const form = getFormData(parseInt(unwrappedParams.id, 10)); // access id from the unwrapped object.
-    console.log("Form ID:", form.id);
-
-    if (!form) {
-        return <div>Quotation data not found.</div>;
-    }
-
+    const [data, setData] = useState<Form[]>([]);
+    useEffect(() => {
+        async function fetchData() {
+          const forms = await getForms();
+          setData(forms);
+        }
+    
+        fetchData();
+      }, []);
+    
     return (
         <div className="">
             <Tabs defaultValue="questions" className="w-full">
