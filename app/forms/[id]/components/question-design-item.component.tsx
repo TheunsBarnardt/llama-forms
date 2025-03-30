@@ -1,3 +1,5 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -8,6 +10,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import {
+
   Calendar,
   CheckSquare,
   CircleChevronDown,
@@ -44,14 +47,15 @@ import { Paragraph } from "./paragraph.component";
 import { MultipleChoiceQuestion } from "./multiple-choice-question.component";
 import { CheckBoxQuestion } from "./checkbox-question.component";
 import { DropdownQuestion } from "./dropdown-question.component";
-import {FormQuestion } from "../../types/form-question.type";
+import { Question } from "@/prisma/interfaces";
+import { deleteQuestion, editQuestion } from "./actions"; // Import actions
 
 export default function QuestionDesignItem({
   field,
   id,
   draggingClassName,
 }: {
-  field: FormQuestion;
+  field: Question;
   id: string;
   draggingClassName?: string;
 }) {
@@ -66,10 +70,9 @@ export default function QuestionDesignItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    // Make cursor a move icon when dragging
-    opacity: transform ? 0.5 : 1, // Reduce opacity when dragging
+    opacity: transform ? 0.5 : 1,
   };
-  const [currentField, setCurrentField] = useState<FormQuestion>(field);
+  const [currentField, setCurrentField] = useState<Question>(field);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const handleTagChange = (tag: string, checked: boolean) => {
@@ -80,24 +83,29 @@ export default function QuestionDesignItem({
     }
   };
 
-  const handleQuestionChange = (
+  const handleQuestionChange = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setCurrentField({ ...currentField, name: e.target.value });
+    const updatedField = { ...currentField, name: e.target.value };
+    setCurrentField(updatedField);
+    await editQuestion(updatedField); // Call editQuestion action
   };
 
-  const handleTypeChange = (value: string) => {
-    setCurrentField({
-      ...currentField,
-      type: value as FormQuestion["type"],
-    });
+  const handleTypeChange = async (value: string) => {
+    const updatedField = { ...currentField, type: value as Question["type"] };
+    setCurrentField(updatedField);
+    await editQuestion(updatedField); // Call editQuestion action
   };
 
-
-  const handleRequiredChange = (checked: boolean) => {
-    setCurrentField({ ...currentField, required: checked });
+  const handleRequiredChange = async (checked: boolean) => {
+    const updatedField = { ...currentField, required: checked };
+    setCurrentField(updatedField);
+    await editQuestion(updatedField); // Call editQuestion action
   };
 
+  const handleDelete = async () => {
+    await deleteQuestion(currentField.id);
+  };
 
   const renderQuestionType = () => {
     switch (currentField.type) {
@@ -141,12 +149,12 @@ export default function QuestionDesignItem({
       checked={selectedTags.includes(label)}
       key={label}
       onCheckedChange={(checked) => handleTagChange(label, checked)}
-      // Prevent the dropdown menu from closing when the checkbox is clicked
       onSelect={(e) => e.preventDefault()}
     >
       {label}
     </DropdownMenuCheckboxItem>
   );
+
   const ShuffleOptionOrder = createDropdownMenuCheckboxItem(
     "Shuffle option order"
   );
@@ -186,7 +194,6 @@ export default function QuestionDesignItem({
             {ShuffleOptionOrder}
           </>
         );
-
       case "checkboxes":
         return (
           <>
@@ -196,13 +203,10 @@ export default function QuestionDesignItem({
             {ShuffleOptionOrder}
           </>
         );
-
       case "file_upload":
       case "linear_scale":
       case "rating":
         return <>{Description}</>;
-
-        return <div>Rating (Not implemented)</div>;
       case "multiple_choice_grid":
       case "checkbox_grid":
         return (
@@ -213,7 +217,6 @@ export default function QuestionDesignItem({
             {ShuffleRowOrder}
           </>
         );
-
       case "date":
         return (
           <>
@@ -223,7 +226,6 @@ export default function QuestionDesignItem({
             {IncludeYear}
           </>
         );
-
       case "time":
         return (
           <>
@@ -233,12 +235,14 @@ export default function QuestionDesignItem({
             {Duration}
           </>
         );
+      default:
+        return null; // or handle other cases
     }
   };
 
   return (
     <div
-      className={`flex flex-col border  pb-4 mb-4 gap-2 border-l-6 border-l-blue-500 bg-background rounded-lg ${
+      className={`flex flex-col border pb-4 mb-4 gap-2 border-l-6 border-l-blue-500 bg-background rounded-lg ${
         isDragging ? draggingClassName : ""
       }`}
       style={style}
@@ -248,21 +252,17 @@ export default function QuestionDesignItem({
         {...listeners}
         {...attributes}
         className="flex items-center justify-center cursor-move text-gray-400 bg-gray-50"
-        // Apply the draggable style
       >
         <GripHorizontal />
       </div>
       <div className="px-4">
         <div className="flex justify-end mb-2">
-          <Select
-            value={currentField.type}
-            onValueChange={handleTypeChange}
-          >
+          <Select value={currentField.type} onValueChange={handleTypeChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Short answer" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="short_answer">
+            <SelectItem value="short_answer">
                 <Text className="inline-block mr-2" />
                 Short answer
               </SelectItem>
@@ -321,7 +321,7 @@ export default function QuestionDesignItem({
         <Input
           placeholder="Short answer text"
           className="mb-2 border-0 drop-shadow-none border-b-1 border-secondary focus:border-0 focus:ring-0 rounded-none focus:drop-shadow-none"
-          value={currentField.type}
+          value={currentField.name}
           onChange={handleQuestionChange}
         />
 
@@ -330,7 +330,7 @@ export default function QuestionDesignItem({
         <div className="flex justify-end items-center mt-2">
           <div className="flex items-center">
             <Copy className="mr-2" />
-            <Trash2 className="mr-2" />
+            <Trash2 className="mr-2" onClick={handleDelete} />
             <Separator orientation="vertical" className="h-2" />
             <Label htmlFor="required" className="text-sm mr-2">
               Required

@@ -1,10 +1,11 @@
 import { useFormContext } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FormQuestion } from "@/app/types/form-question.type";
+import { Question } from "@/prisma/interfaces";
 
 
-export function CheckboxQuestionRender(question: FormQuestion) {
+
+export function CheckboxQuestionRender(question: Question) {
 	const {
 	  register,
 	  formState: { errors },
@@ -21,7 +22,7 @@ export function CheckboxQuestionRender(question: FormQuestion) {
 			<div key={index} className="flex items-center gap-2">
 			  <Checkbox id={`${question.id}-${index}`} {...register(question.id.toString())} value={String(option)} />
 			  <Label htmlFor={`${question.id}-${index}`} className="cursor-pointer">
-				{option}
+				{option.value}
 			  </Label>
 			</div>
 		  ))}

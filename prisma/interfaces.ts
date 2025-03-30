@@ -25,7 +25,7 @@ export interface Question {
   name: string;
   description: string | null;
   type: QuestionType;
-  options: JsonValue | null;
+  options?: Option[];
   required: boolean;
   validation: string | null;
   message: JsonValue | null;
@@ -33,6 +33,14 @@ export interface Question {
   changeDate: Date;
   formId: number;
   form?: Form;
+}
+
+export interface Option {
+  id: number;
+  index: number;
+  value: string;
+  questionsId: number;
+  questions?: Question;
 }
 
 export interface Response {

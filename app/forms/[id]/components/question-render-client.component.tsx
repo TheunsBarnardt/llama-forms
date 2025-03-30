@@ -1,8 +1,9 @@
-import QuestionRender from "./question-render.component";
-import { Form } from "@/app/types/form.type";
+import { Form } from "@/prisma/interfaces";
+import QuestionRender from "./from-render.component";
+
 
 export default function QuestionRenderClient({ form }: { form: Form | null }) {
-  const safeForm = form ?? { title: "Untitled Form", questions: [] };
+  const safeForm = form ?? { title: "Untitled Form", questions: [] } as unknown as Form;
 
-  return <QuestionRender form={safeForm} methods={methods} />;
+  return <QuestionRender form={safeForm}  />;
 }

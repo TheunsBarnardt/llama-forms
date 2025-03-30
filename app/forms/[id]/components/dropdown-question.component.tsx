@@ -4,7 +4,8 @@ import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } 
 import { CSS } from "@dnd-kit/utilities";
 import { Input } from "@/components/ui/input";
 import { GripVertical, Trash2 } from "lucide-react";
-import { FormQuestion } from "../../types/form-question.type";
+import { Question } from "@/prisma/interfaces";
+
 
 // Draggable Option Component
 function DraggableOption({ option, index, onChange, onRemove }: {
@@ -35,8 +36,8 @@ function DraggableOption({ option, index, onChange, onRemove }: {
 }
 
 // Multiple Choice Component
-export function DropdownQuestion(question: FormQuestion) {
-  const [currentQuestion, setCurrentQuestion] = useState<FormQuestion>(question);
+export function DropdownQuestion(question: Question) {
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
@@ -76,7 +77,7 @@ export function DropdownQuestion(question: FormQuestion) {
         <SortableContext items={currentQuestion.options?.map((_, i) => i) || []} strategy={verticalListSortingStrategy}>
          <div className="space-y-2">
             {currentQuestion.options?.map((option, index) => (
-              <DraggableOption key={index} option={option} index={index} onChange={handleOptionChange} onRemove={removeOption} />
+              <DraggableOption key={index} option={option.value} index={index} onChange={handleOptionChange} onRemove={removeOption} />
             ))}
             </div>
         </SortableContext>

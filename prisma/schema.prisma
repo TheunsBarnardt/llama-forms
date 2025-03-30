@@ -36,7 +36,7 @@ model Question {
   name        String
   description String?
   type        QuestionType
-  options     Json?
+  options     Option[]
   required    Boolean
   validation  String?         // Optional field for validation pattern
   message     Json?
@@ -44,6 +44,14 @@ model Question {
   changeDate  DateTime
   formId      Int
   form        Form            @relation(fields: [formId], references: [id])
+}
+
+model Option {
+  id          Int             @id @default(autoincrement())
+  index          Int  
+  value       String
+  questionsId      Int
+  questions        Question            @relation(fields: [questionsId], references: [id])
 }
 
 model Response {

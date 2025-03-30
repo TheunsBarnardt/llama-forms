@@ -15,6 +15,9 @@ const form_dal: IDataAccessLayer<Form> = {
     try {
       const data = await db.form.findUnique({
         where: { id },
+        include: { 
+          questions: true,
+        },
       });
 
       if (!data) {

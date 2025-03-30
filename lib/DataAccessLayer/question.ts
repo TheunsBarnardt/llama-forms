@@ -6,6 +6,19 @@ import { cache } from "react";
 import { Question } from "@/prisma/interfaces";
 
 const question_dal: IDataAccessLayer<Question> = {
+  count: cache(async (id: number): Promise<NextResponse<number>> => {
+    debugger;
+    const data = await db.question.count({
+      where: { formId: id },
+    });
+    return NextSuccess.OK(data);
+  }),
+  load: cache(async (id: number): Promise<NextResponse<Question[]>> => {
+      const data = await db.question.findMany({
+        where: { formId: id },
+      });
+      return NextSuccess.OK(data);
+    }),
   get: cache(async (id: number): Promise<NextResponse<Question> | NextResponse> => {
     try {
       const data = await db.question.findUnique({
@@ -30,7 +43,6 @@ const question_dal: IDataAccessLayer<Question> = {
           name: data.name,
           description: data.description,
           type: data.type,
-          options: data.options ?? undefined,
           required : data.required,
           changeDate: new Date(),
         }

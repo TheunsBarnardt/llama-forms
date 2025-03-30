@@ -2,12 +2,12 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import { Form } from "../../types/form.type";
 import ParagraphRender from "./paragraph-render.component";
 import ShortAnswerRender from "./short-answer-render.component";
 import { useForm } from "react-hook-form";
 import { Form as UIForm } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { Form } from "@/prisma/interfaces";
 export default function QuestionRender({ form }: { form: Form }) {
   const formdata = useForm();
 
@@ -21,7 +21,7 @@ export default function QuestionRender({ form }: { form: Form }) {
       <Separator orientation="horizontal" />
       <UIForm {...formdata}>
         <form onSubmit={formdata.handleSubmit(onSubmit)}>
-          {form.questions.map((question) => {
+          {(form.questions ?? []).map((question) => {
             const questionComponents: Record<string, React.ComponentType<any>> = {
               short_answer: ShortAnswerRender,
               paragraph: ParagraphRender,

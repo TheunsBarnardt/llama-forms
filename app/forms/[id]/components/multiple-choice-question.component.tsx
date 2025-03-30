@@ -5,7 +5,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { GripVertical, Trash2 } from "lucide-react";
-import { FormQuestion } from "@/app/types/form-question.type";
+import { Question } from "@/prisma/interfaces";
+
 
 
 // Draggable Option Component
@@ -37,14 +38,14 @@ function DraggableOption({ option, index, onChange, onRemove }: {
 }
 
 // Multiple Choice Component
-export function MultipleChoiceQuestion(question: FormQuestion) {
-  const [currentQuestion, setCurrentQuestion] = useState<FormQuestion>(question);
+export function MultipleChoiceQuestion(question: Question) {
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
 
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const handleOptionChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newOptions = [...currentQuestion.options!];
-    newOptions[index] = e.target.value;
+    newOptions[index] = { ...newOptions[index], value: e.target.value };
     setCurrentQuestion({ ...currentQuestion, options: newOptions });
   };
 
@@ -78,7 +79,7 @@ export function MultipleChoiceQuestion(question: FormQuestion) {
         <SortableContext items={currentQuestion.options?.map((_, i) => i) || []} strategy={verticalListSortingStrategy}>
           <RadioGroup>
             {currentQuestion.options?.map((option, index) => (
-              <DraggableOption key={index} option={option} index={index} onChange={handleOptionChange} onRemove={removeOption} />
+              <DraggableOption key={index} option={option.value} index={index} onChange={handleOptionChange} onRemove={removeOption} />
             ))}
           </RadioGroup>
         </SortableContext>

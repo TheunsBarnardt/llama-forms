@@ -1,12 +1,13 @@
 import { useFormContext } from "react-hook-form";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FormQuestion } from "@/app/types/form-question.type";
+import { Question } from "@/prisma/interfaces";
+
 
 
 
 // Dropdown Render Component (For Form Submission)
-export function DropdownQuestionRender(question: FormQuestion) {
+export function DropdownQuestionRender(question: Question) {
   const {
     setValue,
     formState: { errors },
@@ -24,8 +25,8 @@ export function DropdownQuestionRender(question: FormQuestion) {
         </SelectTrigger>
         <SelectContent>
           {question.options?.map((option, index) => (
-            <SelectItem key={index} value={option}>
-              {option}
+            <SelectItem key={index} value={option.id.toString()}>
+              {option.value}
             </SelectItem>
           ))}
         </SelectContent>
