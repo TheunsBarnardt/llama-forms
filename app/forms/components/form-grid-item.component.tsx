@@ -36,23 +36,41 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { Form } from "@/prisma/interfaces";
 import { formatDate } from "@/lib/utils";
+import { deleteForm, editForm } from "../actions";
 
 
-export function FormGridItem(form : Form) {
+export function FormGridItem({ form, onDelete, onEdit }: { form: Form; onDelete: (id: number) => void; onEdit: (form: Form) => void; }) {
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [newTitle, setNewTitle] = useState(form.title);
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
-  const handleRename = () => {
-    // Implement your logic to update the form title here
-    console.log("Renamed to:", newTitle);
-    setIsRenameDialogOpen(false);
+  const handleRename = async () => {
+    try {
+      const updatedForm = { ...form, title: newTitle };
+      const result = await editForm(updatedForm);
+      if (result && !result.errors) {
+        onEdit(result); // Notify parent component to update the list
+        setIsRenameDialogOpen(false);
+      } else {
+        console.error("Error renaming form");
+      }
+    } catch (error) {
+      console.error("Error renaming form:", error);
+    }
   };
 
-  const handleRemove = () => {
-    // Implement your logic to remove the form here
-    console.log("Removed form:", form.id);
-    setIsRemoveDialogOpen(false);
+  const handleRemove = async () => {
+    try {
+      const result = await deleteForm(form.id);
+      if (result && result.success) {
+        onDelete(form.id); // Notify parent component to update the list
+        setIsRemoveDialogOpen(false);
+      } else {
+        console.error("Error deleting form");
+      }
+    } catch (error) {
+      console.error("Error deleting form:", error);
+    }
   };
 
   const handleOpen = () => {
@@ -67,7 +85,7 @@ export function FormGridItem(form : Form) {
 
   return (
     <Card
-      className="max-w-xs shadow-none py-0 w-52 h-64 rounded-sm gap-1 cursor-pointer"
+      className="max-w-xs shadow-none py-0 w-52 rounded-sm gap-1 cursor-pointer pb-4"
 
     >
       <CardContent className="p-0 h-40 bg-muted relative">

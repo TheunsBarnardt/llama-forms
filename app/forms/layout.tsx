@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col h-screen bg-indigo-50">
      <FormTopNav />
 
-      <main className="flex-grow overflow-y-auto ">
+      <main className="flex-grow overflow-y-auto flex justify-center ">
         {children}
       </main>
     </div>

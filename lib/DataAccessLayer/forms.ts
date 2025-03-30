@@ -90,21 +90,29 @@ const form_dal: IDataAccessLayer<Form> = {
       );
     }
   },
-
   delete: async (id: number): Promise<NextResponse> => {
     try {
-      // Delete the form and its associated questions
+      console.log(`Attempting to delete form with ID: ${id}`);
+  
+      // 1. Delete related questions first
+      await db.question.deleteMany({
+        where: { formId: id },
+      });
+  
+      // 2. Delete the form
       const deletedForm = await db.form.delete({
         where: { id },
-        include: { questions: true }, // Optionally, include the questions in the response
       });
-
+  
       if (!deletedForm) {
+        console.log(`Form with ID ${id} not found.`);
         return NextError.NotFound("Form not found");
       }
-
+  
+      console.log(`Form with ID ${id} deleted successfully.`);
       return NextSuccess.OK(id);
     } catch (error) {
+      console.error(`Error deleting form with ID ${id}:`, error);
       return NextError.BadRequest(
         error instanceof Error ? error.message : "An error occurred"
       );
