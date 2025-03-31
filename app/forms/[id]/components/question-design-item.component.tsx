@@ -52,8 +52,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import ShortAnswerAddon from '../addons/short-answer.addon';
-import ParagraphAddon from "../addons/paragraph.addon";
+import ShortAnswerAddon from '../../../addons/short-answer.addon';
+import ParagraphAddon from "../../../addons/paragraph.addon";
 
 export default function QuestionDesignItem({
   field,

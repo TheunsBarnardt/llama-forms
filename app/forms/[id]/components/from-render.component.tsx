@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Form, Question } from "@/prisma/interfaces";
 import { useEffect, useState } from "react";
 import { getForm } from "../actions";
-import ShortAnswerAddon from "../addons/short-answer.addon";
-import ParagraphAddon from "../addons/paragraph.addon";
+import ShortAnswerAddon from "../../../addons/short-answer.addon";
+import ParagraphAddon from "../../../addons/paragraph.addon";
 export default function QuestionRender({ id }: { id: number }) {
 
   const [form, setForm] = useState<Form | undefined>(undefined);
