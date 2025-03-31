@@ -10,6 +10,7 @@ export interface User {
 }
 
 export interface Form {
+  [x: string]: Control<FieldValues> | undefined;
   id: number;
   thumbnail: string;
   title: string;

@@ -2,31 +2,37 @@
 
 import { DndContext, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor, closestCenter } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useState, useCallback, useEffect } from "react"; // Import useCallback
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import QuestionDesignItem from "./question-design-item.component";
 import { File, ImageIcon, PlaySquare, Text } from "lucide-react";
 import { Form, Question } from "@/prisma/interfaces";
-import { addQuestion } from "./actions"; // Import the server action
-import { getForm } from "../actions";
+import { addQuestion } from "./actions";
+import { getForm, editForm } from "../actions";
+import { Input } from "@/components/ui/input";
 
 export function Forms({ id }: { id: number }) {
-
   const [form, setForm] = useState<Form | undefined>(undefined);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getForm(id);
       setForm(response);
-      if(response) {
+      if (response) {
         setQuestions(response.questions || []);
       }
     };
     fetchData();
   }, [id]);
 
-
+  useEffect(() => {
+    if (isEditingTitle && titleInputRef.current) {
+      titleInputRef.current.focus();
+    }
+  }, [isEditingTitle]);
 
   const sensors = useSensors(
     useSensor(MouseSensor),
@@ -57,7 +63,7 @@ export function Forms({ id }: { id: number }) {
         console.error("Form is undefined. Cannot add question.");
         return;
       }
-      const newQuestionData = await addQuestion(form.id); // Call the server action
+      const newQuestionData = await addQuestion(form.id);
 
       if (newQuestionData) {
         setQuestions((prevQuestions) => [...prevQuestions, newQuestionData]);
@@ -75,11 +81,38 @@ export function Forms({ id }: { id: number }) {
     );
   };
 
+  const handleTitleClick = () => {
+    setIsEditingTitle(true);
+  };
+
+  const handleTitleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!form) return;
+    const newTitle = e.target.value;
+    const updatedForm = { ...form, title: newTitle };
+    setForm(updatedForm);
+    await editForm(updatedForm);
+  };
+
+  const handleTitleBlur = () => {
+    setIsEditingTitle(false);
+  };
+
   return (
     <div className="pt-4 w-6xl mx-auto">
       <div className="rounded-lg bg-background p-4 mb-4 border-t-8 border-t-fuchsia-700">
         <div>
-          <h1 className="text-2xl font-bold">{form?.title}</h1>
+          {isEditingTitle && form ? (
+            <Input
+              ref={titleInputRef}
+              value={form.title}
+              onChange={handleTitleChange}
+              onBlur={handleTitleBlur}
+            />
+          ) : (
+            <h1 className="text-2xl font-bold cursor-pointer" onClick={handleTitleClick}>
+              {form?.title}
+            </h1>
+          )}
         </div>
       </div>
 
@@ -96,7 +129,7 @@ export function Forms({ id }: { id: number }) {
                 field={field}
                 id={field.id.toString()}
                 draggingClassName="dragging"
-                onDelete={handleQuestionDelete} 
+                onDelete={handleQuestionDelete}
               />
             ))}
           </div>
