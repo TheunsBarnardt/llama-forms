@@ -1,14 +1,30 @@
-import { Input } from "@/components/ui/input";
-import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Question, Form } from "@/prisma/interfaces";
 import { IAddons } from "./IAddons";
-import { Text } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import React, { useState } from "react";
-import { createDropdownMenuCheckboxItem, handleTagChange } from "./addon-helper";
+import {
+  createDropdownMenuCheckboxItem,
+  handleTagChange,
+} from "./addon-helper";
 import { SelectItem } from "@/components/ui/select";
 
 // Render Component
-const Render: IAddons["render"] = ({ question, form }: { form: Form; question: Question }) => {
+const Render: IAddons["render"] = ({
+  question,
+  form,
+}: {
+  question: Question;
+  form: Form;
+}) => {
   return (
     <FormField
       control={form.control}
@@ -17,9 +33,11 @@ const Render: IAddons["render"] = ({ question, form }: { form: Form; question: Q
         <FormItem>
           <FormLabel>{question.name}</FormLabel>
           <FormControl>
-            <Input type="" {...field} />
+            <Textarea className="resize-none" {...field} />
           </FormControl>
-          <FormDescription>This is your short answer.</FormDescription>
+          <FormDescription>
+            You can @mention other users and organizations.
+          </FormDescription>
           <FormMessage />
         </FormItem>
       )}
@@ -30,8 +48,8 @@ const Render: IAddons["render"] = ({ question, form }: { form: Form; question: Q
 // Design Component
 const Design: IAddons["design"] = () => {
   return (
-    <Input
-      placeholder="Short answer text"
+    <Textarea
+      placeholder="Paragraph text"
       className="mb-2 border-0 drop-shadow-none border-b-1 border-secondary focus:border-0 focus:ring-0 rounded-none focus:drop-shadow-none"
       spellCheck={true}
     />
@@ -41,7 +59,7 @@ const Design: IAddons["design"] = () => {
 // Render Dropdown Component
 const Options: IAddons["options"] = () => {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const tags = ["Description", "Responce validation"]; 
+  const tags = ["Description", "Response validation"];
 
   const dropdownItems = tags.map((tag) =>
     createDropdownMenuCheckboxItem(tag, selectedTags, (tag, checked) =>
@@ -49,28 +67,24 @@ const Options: IAddons["options"] = () => {
     )
   );
 
-  return (
-    <>
-        {dropdownItems}
-    </>
-  );
+  return <>{dropdownItems}</>;
 };
 
-// Menu Item Component
+// Select Item Component
 const Menu: React.FC = () => {
   return (
-    <SelectItem value="short_answer">
-      <Text className="inline-block mr-2" />
-      Short answer
+    <SelectItem value="paragraph">
+      <MessageSquare className="inline-block mr-2" />
+      Paragraph
     </SelectItem>
   );
 };
 
-const ShortAnswerAddon: IAddons & { menu: React.FC } = { 
+const ParagraphAddon: IAddons & { menu: React.FC } = {
   render: Render,
   design: Design,
   options: Options,
   menu: Menu,
 };
 
-export default ShortAnswerAddon;
+export default ParagraphAddon;

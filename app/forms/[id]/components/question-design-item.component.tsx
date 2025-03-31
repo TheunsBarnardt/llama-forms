@@ -20,15 +20,12 @@ import {
   Grip,
   GripHorizontal,
   List,
-  MessageSquare,
   SlidersVertical,
   Star,
-  Text,
   Timer,
   Trash2,
 } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { ShortAnswer } from "./short-answer.component";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -42,7 +39,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Paragraph } from "./paragraph.component";
 import { MultipleChoiceQuestion } from "./multiple-choice-question.component";
 import { CheckBoxQuestion } from "./checkbox-question.component";
 import { DropdownQuestion } from "./dropdown-question.component";
@@ -56,6 +52,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import ShortAnswerAddon from '../addons/short-answer.addon';
+import ParagraphAddon from "../addons/paragraph.addon";
 
 export default function QuestionDesignItem({
   field,
@@ -128,9 +126,9 @@ export default function QuestionDesignItem({
   const renderQuestionType = () => {
     switch (currentField.type) {
       case "short_answer":
-        return <ShortAnswer />;
+        return <ShortAnswerAddon.design />;
       case "paragraph":
-        return <Paragraph />;
+        return <ParagraphAddon.design />;
       case "multiple_choice":
         return <MultipleChoiceQuestion {...currentField} />;
       case "checkboxes":
@@ -195,13 +193,9 @@ export default function QuestionDesignItem({
   const renderDropdown = () => {
     switch (currentField.type) {
       case "short_answer":
+        return ShortAnswerAddon.options({ question: currentField });
       case "paragraph":
-        return (
-          <>
-            {Description}
-            {ResponceValidation}
-          </>
-        );
+        return ParagraphAddon.options({ question: currentField });
       case "dropdown":
       case "multiple_choice":
         return (
@@ -280,14 +274,8 @@ export default function QuestionDesignItem({
               <SelectValue placeholder="Short answer" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="short_answer">
-                <Text className="inline-block mr-2" />
-                Short answer
-              </SelectItem>
-              <SelectItem value="paragraph">
-                <MessageSquare className="inline-block mr-2" />
-                Paragraph
-              </SelectItem>
+             <ShortAnswerAddon.menu/>;
+             <ParagraphAddon.menu/>;
               <DropdownMenuSeparator />
               <SelectItem value="multiple_choice">
                 <List className="inline-block mr-2" />

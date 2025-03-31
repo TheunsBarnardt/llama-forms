@@ -2,14 +2,14 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import ParagraphRender from "./paragraph-render.component";
-import ShortAnswerRender from "./short-answer-render.component";
 import { useForm } from "react-hook-form";
 import { Form as UIForm } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Form, Question } from "@/prisma/interfaces";
 import { useEffect, useState } from "react";
 import { getForm } from "../actions";
+import ShortAnswerAddon from "../addons/short-answer.addon";
+import ParagraphAddon from "../addons/paragraph.addon";
 export default function QuestionRender({ id }: { id: number }) {
 
   const [form, setForm] = useState<Form | undefined>(undefined);
@@ -42,8 +42,8 @@ export default function QuestionRender({ id }: { id: number }) {
         <form onSubmit={formdata.handleSubmit(onSubmit)}>
           {(questions ?? []).map((question) => {
             const questionComponents: Record<string, React.ComponentType<any>> = {
-              short_answer: ShortAnswerRender,
-              paragraph: ParagraphRender,
+              short_answer: ShortAnswerAddon.render,
+              paragraph: ParagraphAddon.render,
             };
 
             const QuestionComponent = questionComponents[question.type];
